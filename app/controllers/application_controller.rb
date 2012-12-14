@@ -1,3 +1,7 @@
 class ApplicationController < ActionController::Base
-  protect_from_forgery
+  before_filter :set_default_format
+
+  def set_default_format
+    request.format = 'json' unless params[:format]
+  end
 end

@@ -1,4 +1,6 @@
 Dplalife::Application.routes.draw do
+  resource :search, only: [:show]
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

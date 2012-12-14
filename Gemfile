@@ -5,8 +5,10 @@ gem 'faker', '~> 1.1.2'
 gem 'foreman', '~> 0.60.2'
 gem 'jquery-rails', '2.1.3'
 gem 'pg', '~> 0.14.1'
+gem 'rabl', '~> 0.7.9'
 gem 'rails', '3.2.9'
 gem 'unicorn', '~> 4.4.0'
+gem 'yajl-ruby', '~> 1.1.0'
 
 group :development do
   gem 'annotate', '~> 2.5.0'
