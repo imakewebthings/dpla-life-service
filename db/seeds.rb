@@ -10,12 +10,12 @@ require 'faker'
 
 500.times do |n|
   title = []
-  (1 + rand(1)).times do
+  (1 + rand(2)).times do # 1 or 2 titles (subtitle)
     title.push Faker::Lorem.words.join(' ').titleize
   end
 
   publisher = []
-  (1 + rand(1)).times do
+  (1 + rand(2)).times do # 1 or 2 publishers
     publisher.push "#{Faker::Lorem.words(2).join(' ').titleize} Publishing"
   end
 
@@ -28,7 +28,7 @@ require 'faker'
     :source => 'http://dpla.example.org'
   }, :without_protection => true)
 
-  (1 + rand(2)).times do
+  (1 + rand(3)).times do #Between 1-3 temporal dates for each book
     date = "#{1800 + rand(200)}-02-14"
     DateRange.create({
       :book_id => book.id,
