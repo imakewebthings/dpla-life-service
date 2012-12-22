@@ -31,6 +31,7 @@ GEM
     annotate (2.5.0)
       rake
     arel (3.0.2)
+    bcrypt-ruby (3.0.1)
     builder (3.0.4)
     childprocess (0.3.6)
       ffi (~> 1.0, >= 1.0.6)
@@ -170,6 +171,7 @@ PLATFORMS
 
 DEPENDENCIES
   annotate (~> 2.5.0)
+  bcrypt-ruby (~> 3.0.1)
   coffee-rails (~> 3.2.2)
   factory_girl_rails (~> 4.1.0)
   faker (~> 1.1.2)
