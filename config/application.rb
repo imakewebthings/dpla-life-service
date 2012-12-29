@@ -74,5 +74,13 @@ module Dplalife
       g.fixture_replacement :factory_girl, :dir => "spec/factories"
       g.assets false
     end
+
+    # CORS settings
+    config.middleware.use Rack::Cors do
+      allow do
+        origins '*'
+        resource '*', :headers => :any, :methods => [:get, :post, :options]
+      end
+    end
   end
 end
