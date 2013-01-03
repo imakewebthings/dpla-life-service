@@ -1,4 +1,6 @@
 class ApplicationController < ActionController::Base
+  require 'active_record/validations'
+
   before_filter :set_default_format
 
   rescue_from ActiveRecord::RecordInvalid, :with => :render_422
