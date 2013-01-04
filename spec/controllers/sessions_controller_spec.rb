@@ -62,4 +62,26 @@ describe SessionsController do
       end
     end
   end
+
+  describe '#show' do
+    context 'with valid session token' do
+      before do
+        request.env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Token.encode_credentials(user.token)
+        get :show
+      end
+
+      it { should respond_with 200 }
+      specify { response.body.should be_blank }
+    end
+
+    context 'with invalid session token' do
+      before do
+        request.env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Token.encode_credentials('nonsense')
+        get :show
+      end
+
+      it { should respond_with 401 }
+      it { should render_template nil }
+    end
+  end
 end
