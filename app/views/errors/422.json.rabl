@@ -1,3 +1,3 @@
-object false
+collection @errors, root: 'errors'
 
-child(@errors)
+node(:message) {|e| e }

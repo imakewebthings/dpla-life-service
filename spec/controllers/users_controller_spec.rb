@@ -8,7 +8,7 @@ describe UsersController do
       end
 
       it { should respond_with 201 }
-      it { should render_template :show }
+      it { should render_template :session }
       it { should assign_to :user }
       specify { User.count.should eq 1 }
     end

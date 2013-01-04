@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 ruby '1.9.3'
 
-gem 'bcrypt-ruby', '~> 3.0.1'
+gem 'bcrypt-ruby', '~> 3.0.1', :require => 'bcrypt'
 gem 'faker', '~> 1.1.2'
 gem 'foreman', '~> 0.60.2'
 gem 'jquery-rails', '2.1.3'
