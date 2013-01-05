@@ -5,6 +5,10 @@ class SessionsController < ApplicationController
     @user = User.find_by_email params[:session][:email]
 
     if @user && @user.authenticate(params[:session][:password])
+      unless @user.token
+        @user.generate_token
+        @user.save
+      end
       render 'users/session'
     else
       head 401
