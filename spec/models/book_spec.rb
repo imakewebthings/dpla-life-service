@@ -3,7 +3,7 @@
 # Table name: books
 #
 #  id          :integer          not null, primary key
-#  @id         :string(255)      not null
+#  _id         :string(255)      not null
 #  title       :string(255)
 #  publisher   :string(255)
 #  creator     :string(255)
@@ -18,7 +18,8 @@ describe Book do
     build(:book).should be_valid
   end
 
-  it { should validate_presence_of :@id }
-  it { should validate_uniqueness_of :@id }
+  it { should validate_presence_of :_id }
+  it { should validate_uniqueness_of :_id }
+
   it { should have_many :temporals }
 end

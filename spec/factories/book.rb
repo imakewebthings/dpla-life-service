@@ -1,5 +1,5 @@
 FactoryGirl.define do
   factory :book do |f|
-    sequence(:@id) {|n| "sample-@id-#{n}" }
+    sequence(:_id) {|n| "sample-_id-#{n}" }
   end
 end

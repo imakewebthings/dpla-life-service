@@ -13,7 +13,6 @@ guard 'spork', :rspec_env => { 'RAILS_ENV' => 'test' } do
 end
 
 guard 'rspec',
-  :version => 2,
   :all_after_pass => false,
   :cli => '--drb' do
 

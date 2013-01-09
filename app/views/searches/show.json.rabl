@@ -3,7 +3,8 @@ node(:start) { @start }
 node(:limit) { @limit }
 node(:num_found) { @num_found }
 child(@books => :docs) do
-  attribute :@id
+  attribute :_id
+  node(:@id) {|book| "http://dpla.example.org/item/#{book._id}" }
   attribute :source => :link
   node(:title) {|book| book.title.join(' - ') }
   node(:creator) {|book| [book.creator] }

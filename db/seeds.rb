@@ -8,6 +8,8 @@
 
 require 'faker'
 
+Book.destroy_all
+
 500.times do |n|
   title = []
   (1 + rand(2)).times do # 1 or 2 titles (subtitle)
@@ -20,7 +22,7 @@ require 'faker'
   end
 
   book = Book.create({
-    :@id => "http://dpla.example.org/books/#{n}",
+    :_id => "http://dpla.example.org/books/#{n}",
     :title => title,
     :creator => "#{Faker::Name.last_name}, #{Faker::Name.first_name}",
     :publisher => publisher,
