@@ -22,12 +22,12 @@ Book.destroy_all
   end
 
   book = Book.create({
-    :_id => "http://dpla.example.org/books/#{n}",
+    :_id => "book-#{n}",
     :title => title,
     :creator => "#{Faker::Name.last_name}, #{Faker::Name.first_name}",
     :publisher => publisher,
     :description => Faker::Lorem.paragraph,
-    :source => 'http://dpla.example.org'
+    :dplaLocation => 'http://source.example.org'
   }, :without_protection => true)
 
   (1 + rand(3)).times do #Between 1-3 temporal dates for each book

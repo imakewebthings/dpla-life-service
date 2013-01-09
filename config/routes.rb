@@ -2,6 +2,7 @@ Dplalife::Application.routes.draw do
   resource :search, only: [:show]
   resources :users, only: [:create]
   resource :session, only: [:create, :destroy, :show]
+  resources :books, only: [:show]
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
