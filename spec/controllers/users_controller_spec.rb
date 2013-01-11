@@ -22,4 +22,30 @@ describe UsersController do
       it { should render_template 'errors/422' }
     end
   end
+
+  describe '#destroy' do
+    let(:user) { create :user }
+
+    context 'with a valid session token' do
+      before do
+        set_token user.token
+        delete :destroy, id: user.id
+      end
+
+      it { should respond_with 204 }
+      it { should render_template nil }
+      specify { User.count.should eq 0 }
+    end
+
+    context 'with an invalid session token' do
+      before do
+        set_token 'nonsense'
+        delete :destroy, id: user.id
+      end
+
+      it { should respond_with 401 }
+      it { should render_template nil }
+      specify { User.count.should eq 1 }
+    end
+  end
 end

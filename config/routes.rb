@@ -1,6 +1,6 @@
 Dplalife::Application.routes.draw do
   resource :search, only: [:show]
-  resources :users, only: [:create]
+  resources :users, only: [:create, :destroy]
   resource :session, only: [:create, :destroy, :show]
   resources :books, only: [:show]
 

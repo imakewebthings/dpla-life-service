@@ -34,7 +34,7 @@ describe SessionsController do
   describe '#destroy' do
     context 'with valid session token' do
       before do
-        request.env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Token.encode_credentials(user.token)
+        set_token user.token
         delete :destroy
       end
 
@@ -66,7 +66,7 @@ describe SessionsController do
   describe '#show' do
     context 'with valid session token' do
       before do
-        request.env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Token.encode_credentials(user.token)
+        set_token user.token
         get :show
       end
 
@@ -76,7 +76,7 @@ describe SessionsController do
 
     context 'with invalid session token' do
       before do
-        request.env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Token.encode_credentials('nonsense')
+        set_token 'nonsense'
         get :show
       end
 

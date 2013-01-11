@@ -44,7 +44,7 @@ Spork.prefork do
     # RSpec helpers
     # config.include Devise::TestHelpers, :type => :controller
     # config.include RequestHelpers, :type => :request
-    # config.extend ControllerMacros, :type => :controller
+    config.include ControllerMacros, :type => :controller
     config.include FactoryGirl::Syntax::Methods
   end
 end
