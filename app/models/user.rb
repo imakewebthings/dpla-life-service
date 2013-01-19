@@ -18,6 +18,8 @@ class User < ActiveRecord::Base
   
   before_create :generate_token
 
+  has_many :reviews
+
   validates :email, presence: true,
                     uniqueness: true,
                     confirmation: true,

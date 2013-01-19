@@ -32,6 +32,8 @@ describe User do
   it { should_not allow_value('1234567').for :password }
   it { should allow_value('12345678').for :password }
 
+  it { should have_many :reviews }
+
   it 'validates confirmation of password' do
     build(:user,
       password: 'doesnotmatch',

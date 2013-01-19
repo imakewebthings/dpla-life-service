@@ -20,6 +20,9 @@ describe Review do
   it { should validate_presence_of :user_id }
   it { should ensure_inclusion_of(:rating).in_range 1..5 }
 
+  it { should allow_mass_assignment_of :rating }
+  it { should allow_mass_assignment_of :comment }
+
   it 'requires at least a comment or a rating' do
     build(:review, comment: nil, rating: nil).should_not be_valid
   end
