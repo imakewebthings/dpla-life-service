@@ -1,3 +1,3 @@
 collection @reviews
 
-extend 'reviews/show'
+extends 'reviews/show'
