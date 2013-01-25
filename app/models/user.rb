@@ -6,6 +6,7 @@
 #  email           :string(255)
 #  password_digest :string(255)
 #  token           :string(255)
+#  display_name    :string(255)
 #
 
 class User < ActiveRecord::Base
@@ -14,11 +15,12 @@ class User < ActiveRecord::Base
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
 
   attr_reader :password
-  attr_accessible :password, :password_confirmation, :email
+  attr_accessible :password, :password_confirmation, :email, :display_name
   
   before_create :generate_token
+  before_save :default_values
 
-  has_many :reviews
+  has_many :reviews, dependent: :destroy
 
   validates :email, presence: true,
                     uniqueness: true,
@@ -33,5 +35,9 @@ class User < ActiveRecord::Base
     begin
       self.token = SecureRandom.hex
     end while self.class.exists?(token: token)
+  end
+
+  def default_values
+    self.display_name = 'Anonymous' if self.display_name.blank?
   end
 end

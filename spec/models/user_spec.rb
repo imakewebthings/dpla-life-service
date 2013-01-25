@@ -6,6 +6,7 @@
 #  email           :string(255)
 #  password_digest :string(255)
 #  token           :string(255)
+#  display_name    :string(255)
 #
 
 require 'spec_helper'
@@ -20,6 +21,7 @@ describe User do
   it { should allow_mass_assignment_of :email }
   it { should allow_mass_assignment_of :password }
   it { should allow_mass_assignment_of :password_confirmation }
+  it { should allow_mass_assignment_of :display_name}
   it { should_not allow_mass_assignment_of :password_digest }
   it { should_not allow_mass_assignment_of :token }
 
@@ -39,6 +41,16 @@ describe User do
       password: 'doesnotmatch',
       password_confirmation: '!@#$%^&*()'
     ).should_not be_valid
+  end
+
+  it 'sets default value of display_name to Anonymous' do
+    user.display_name.should eq 'Anonymous'
+  end
+
+  it 'sets nil values of display_name to the default' do
+    user.display_name = nil
+    user.save
+    user.display_name.should eq 'Anonymous'
   end
 
   describe '#authenticate' do

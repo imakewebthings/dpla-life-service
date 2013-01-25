@@ -17,5 +17,5 @@ class Review < ActiveRecord::Base
   validates :book_id, presence: true
   validates :user_id, presence: true, uniqueness: { scope: :book_id }
   validates :comment, presence: true, :unless => :rating?
-  validates :rating, inclusion: 1..5
+  validates :rating, inclusion: 1..5, allow_nil: true
 end

@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe UsersController do
+  let(:user) { create :user }
+
   describe '#create' do
     context 'with valid user attributes' do
       before do
@@ -24,8 +26,6 @@ describe UsersController do
   end
 
   describe '#destroy' do
-    let(:user) { create :user }
-
     context 'with a valid session token' do
       before do
         set_token user.token
@@ -46,6 +46,31 @@ describe UsersController do
       it { should respond_with 401 }
       it { should render_template nil }
       specify { User.count.should eq 1 }
+    end
+  end
+
+  describe '#update' do
+    context 'with a valid session token' do
+      before do
+        set_token user.token
+        put :update, id: user.id, user: { display_name: 'Joe' }
+        user.reload
+      end
+
+      it { should respond_with 200 }
+      it { should render_template :show }
+      specify { user.display_name.should eq 'Joe' }
+    end
+
+    context 'with an invalid session token' do
+      before do
+        put :update, id: user.id, user: { display_name: 'Joe' }
+        user.reload
+      end
+      
+      it { should respond_with 401 }
+      it { should render_template nil }
+      specify { user.display_name.should eq 'Anonymous' }
     end
   end
 end

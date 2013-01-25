@@ -12,7 +12,7 @@
 #
 
 class Book < ActiveRecord::Base
-  has_many :temporals, class_name: 'DateRange'
+  has_many :temporals, class_name: 'DateRange', dependent: :destroy
 
   validates :_id, presence: true, uniqueness: true
 

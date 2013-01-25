@@ -1,3 +1,6 @@
 object @review
 
-attributes :id, :book_id, :user_id, :rating, :comment
+attributes :id, :book_id, :rating, :comment
+child :user do
+  attributes :id, :display_name
+end
