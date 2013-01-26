@@ -35,6 +35,7 @@ describe User do
   it { should allow_value('12345678').for :password }
 
   it { should have_many :reviews }
+  it { should have_many :shelves }
 
   it 'validates confirmation of password' do
     build(:user,

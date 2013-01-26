@@ -21,6 +21,7 @@ class User < ActiveRecord::Base
   before_save :default_values
 
   has_many :reviews, dependent: :destroy
+  has_many :shelves, dependent: :destroy
 
   validates :email, presence: true,
                     uniqueness: true,
