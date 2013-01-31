@@ -71,10 +71,62 @@ describe ShelvesController do
   end
 
   describe '#update' do
-    it 'needs specs'
+    context 'with a valid user token' do
+      before do
+        set_token shelf.user.token
+      end
+
+      context 'with valid shelf attributes' do
+        before do
+          put :update, id: shelf.id, shelf: { name: 'new-shelf-name' }
+        end
+
+        it { should respond_with 200 }
+        it { should render_template :show }
+        it { should assign_to :shelf }
+        specify { shelf.reload; shelf.name.should eq 'new-shelf-name' }
+      end
+
+      context 'with invalid shelf attributes' do
+        before do
+          put :update, id: shelf.id, shelf: { name: nil }
+        end
+
+        it { should respond_with 422 }
+        it { should render_template 'errors/422' }
+        specify { shelf.reload; shelf.name.should_not eq 'new-shelf-name' }
+      end
+    end
+
+    context 'without a valid user token' do
+      before do
+        put :update, id: shelf.id, shelf: { name: 'new-shelf-name' }
+      end
+
+      it { should respond_with 401 }
+      it { should render_template nil }
+      specify { shelf.reload; shelf.name.should_not eq 'new-shelf-name' }
+    end
   end
 
   describe '#destroy' do
-    it 'needs specs'
+    context 'with a valid user token' do
+      before do
+        set_token shelf.user.token
+        delete :destroy, id: shelf.id
+      end
+
+      it { should respond_with 204 }
+      it { should render_template nil }
+      specify { Shelf.count.should eq 0 }
+    end
+
+    context 'without a valid user token' do
+       before { delete :destroy, id: shelf.id }
+
+       it { should respond_with 401 }
+       it { should render_template nil }
+       specify { Shelf.count.should eq 1 }
+    end
   end
 end
