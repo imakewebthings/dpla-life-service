@@ -1,3 +1,14 @@
+# == Schema Information
+#
+# Table name: shelves
+#
+#  id          :integer          not null, primary key
+#  user_id     :integer
+#  name        :string(255)
+#  description :text
+#  book_ids    :text
+#
+
 require 'spec_helper'
 
 describe Shelf do

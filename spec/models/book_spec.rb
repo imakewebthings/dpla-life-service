@@ -9,6 +9,7 @@
 #  creator      :string(255)
 #  description  :text
 #  dplaLocation :string(255)
+#  viewer_url   :string(255)
 #
 
 require 'spec_helper'
