@@ -1,3 +1,3 @@
 collection @shelves
 
-extend 'shelves/show'
+extends 'shelves/show'
