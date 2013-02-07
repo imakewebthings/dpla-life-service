@@ -14,8 +14,14 @@ class Shelf < ActiveRecord::Base
 
   serialize :book_ids
 
+  before_save :ensure_book_id_array
+
   belongs_to :user
 
   validates :name, presence: true
   validates :user_id, presence: true
+
+  def ensure_book_id_array
+    self.book_ids = [] if self.book_ids.nil?
+  end
 end

@@ -129,4 +129,39 @@ describe ShelvesController do
        specify { Shelf.count.should eq 1 }
     end
   end
+
+  describe '#push' do
+    context 'when not logged in' do
+      before do
+        post :push, id: shelf.id, book_id: 1
+      end
+
+      it { should respond_with 401 }
+      it { should render_template nil }
+      specify { shelf.reload; shelf.book_ids.should be_blank }
+    end
+
+    context 'when shelf does not belong to user' do
+      before do
+        set_token user.token
+        post :push, id: shelf.id, book_id: 1
+      end
+
+      it { should respond_with 401 }
+      it { should render_template nil }
+      specify { shelf.reload; shelf.book_ids.should be_blank }
+    end
+
+    context 'when shelf belongs to user' do
+      before do
+        set_token shelf.user.token
+        post :push, id: shelf.id, book_id: 1
+      end
+
+      it { should respond_with 201 }
+      it { should render_template :show }
+      it { should assign_to(:shelf).with shelf }
+      specify { shelf.reload; shelf.book_ids.should eq ['1'] }
+    end
+  end
 end

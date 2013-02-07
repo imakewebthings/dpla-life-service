@@ -71,7 +71,8 @@ describe SessionsController do
       end
 
       it { should respond_with 200 }
-      specify { response.body.should be_blank }
+      it { should render_template 'users/session' }
+      it { should assign_to :user }
     end
 
     context 'with invalid session token' do

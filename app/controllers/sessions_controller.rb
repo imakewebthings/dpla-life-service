@@ -22,6 +22,6 @@ class SessionsController < ApplicationController
   end
 
   def show
-    render nothing: true
+    render 'users/session'
   end
 end

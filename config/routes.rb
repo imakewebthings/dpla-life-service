@@ -8,7 +8,9 @@ Dplalife::Application.routes.draw do
     resources :reviews, only: [:index, :create]
   end
   resources :reviews, only: [:show, :update, :destroy]
-  resources :shelves, only: [:show, :update, :destroy]
+  resources :shelves, only: [:show, :update, :destroy] do
+    post 'books', on: :member, action: :push
+  end
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

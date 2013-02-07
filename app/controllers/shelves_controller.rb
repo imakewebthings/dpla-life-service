@@ -1,7 +1,7 @@
 class ShelvesController < ApplicationController
   before_filter :get_user, only: [:index]
-  before_filter :auth_and_get_user, only: [:create, :update, :destroy]
-  before_filter :get_shelf, only: [:show, :update, :destroy]
+  before_filter :auth_and_get_user, only: [:create, :update, :destroy, :push]
+  before_filter :get_shelf, only: [:show, :update, :destroy, :push]
 
   def index
     @shelves = Shelf.where({ user_id: params[:user_id] })
@@ -28,6 +28,16 @@ class ShelvesController < ApplicationController
     if @shelf.user == @user
       @shelf.destroy
       head 204
+    else
+      head 401
+    end
+  end
+
+  def push
+    if @shelf.user == @user
+      @shelf.book_ids.push(params[:book_id]).uniq
+      @shelf.save
+      render :show, status: 201
     else
       head 401
     end
