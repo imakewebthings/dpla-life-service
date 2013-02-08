@@ -31,7 +31,10 @@ class SearchesController < ApplicationController
     def search_by_ids
       @limit = 0
       @start = -1
-      @books = Book.where(:_id => params[:ids])
+      unsorted_books = Book.where(:_id => params[:ids])
+      @books = params[:ids].collect do |id|
+        unsorted_books.detect {|x| x[:_id] == id}
+      end
       @num_found = @books.length
     end
 
