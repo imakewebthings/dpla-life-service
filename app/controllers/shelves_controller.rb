@@ -35,7 +35,7 @@ class ShelvesController < ApplicationController
 
   def push
     if @shelf.user == @user
-      @shelf.book_ids.push(params[:book_id]).uniq
+      @shelf.book_ids.push(params[:book_id]).uniq!
       @shelf.save
       render :show, status: 201
     else
