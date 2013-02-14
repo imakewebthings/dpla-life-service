@@ -83,5 +83,9 @@ module Dplalife
                       :methods => [:get, :post, :put, :delete, :options]
       end
     end
+
+    # Setting for which data source to use. Reads from environment variables
+    # by default but this makes it easy to override in test environmnet.
+    config.book_source = ENV['BOOK_SOURCE']
   end
 end

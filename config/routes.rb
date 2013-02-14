@@ -1,5 +1,4 @@
 Dplalife::Application.routes.draw do
-  resource :search, only: [:show]
   resources :users, only: [:create, :destroy, :update] do
     resources :shelves, only: [:index, :create]
   end
@@ -11,6 +10,7 @@ Dplalife::Application.routes.draw do
   resources :shelves, only: [:show, :update, :destroy] do
     post 'books', on: :member, action: :push
   end
+  get 'search' => 'books#search'
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

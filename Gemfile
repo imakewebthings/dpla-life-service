@@ -8,7 +8,7 @@ gem 'jquery-rails', '2.1.3'
 gem 'pg', '~> 0.14.1'
 gem 'rabl', '~> 0.7.9'
 gem 'rack-cors', '~> 0.2.7', :require => 'rack/cors'
-gem 'rails', '3.2.11'
+gem 'rails', '3.2.12'
 gem 'unicorn', '~> 4.4.0'
 gem 'yajl-ruby', '~> 1.1.0'
 

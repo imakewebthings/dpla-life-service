@@ -38,4 +38,7 @@ Dplalife::Application.configure do
   # Unicorn "needs" the logger to be STDOUT, but seeing DB transactions
   # in tests is annoying.
   config.logger = nil
+
+  # Always use local mock book data for tests
+  config.book_source = 'local'
 end
