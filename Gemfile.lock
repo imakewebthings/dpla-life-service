@@ -94,6 +94,9 @@ GEM
     mocha (0.10.5)
       metaclass (~> 0.0.1)
     multi_json (1.6.1)
+    openlibrary (1.0.0)
+      json
+      rest-client
     pg (0.14.1)
     polyglot (0.3.3)
     pry (0.9.12)
@@ -132,6 +135,8 @@ GEM
     rb-fsevent (0.9.3)
     rdoc (3.12.1)
       json (~> 1.4)
+    rest-client (1.6.7)
+      mime-types (>= 1.16)
     rspec (2.12.0)
       rspec-core (~> 2.12.0)
       rspec-expectations (~> 2.12.0)
@@ -193,6 +198,7 @@ DEPENDENCIES
   guard-rspec (~> 2.1.2)
   guard-spork (~> 1.2.3)
   jquery-rails (= 2.1.3)
+  openlibrary (~> 1.0.0)
   pg (~> 0.14.1)
   rabl (~> 0.7.9)
   rack-cors (~> 0.2.7)

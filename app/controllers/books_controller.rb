@@ -1,3 +1,5 @@
+require 'ostruct'
+
 class BooksController < ApplicationController
   before_filter :extend_for_book_source
 
@@ -54,12 +56,34 @@ class BooksController < ApplicationController
       case Rails.configuration.book_source
       when 'hathi'
         self.extend HathiBooks
+      when 'openlibrary'
+        self.extend OpenLibraryBooks
       end
     end
 
   module HathiBooks
     def show
-      puts 'sup'
+    end
+
+    def search
+    end
+  end
+
+  module OpenLibraryBooks
+    def show
+      book_json = Openlibrary::Data.find_by_isbn params[:id]
+      @book = OpenStruct.new(
+        :_id => params[:id],
+        :title => [book_json.title, book_json.subtitle].compact,
+        :publisher => book_json.publishers.map{|p| p['name'] },
+        :creator => book_json.authors[0]['name'],
+        :description => nil,
+        :dplaLocation => book_json.url,
+        :viewer_url => book_json.url
+      )
+    end
+
+    def search
     end
   end
 end
