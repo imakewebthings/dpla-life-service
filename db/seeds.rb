@@ -23,6 +23,13 @@ Book.destroy_all
 
   viewer_url = rand(2) == 1 ? 'http://viewer.example.org/' : nil
 
+  cover_small = nil
+  cover_large = nil
+  if rand(2) == 1
+    cover_small = 'http://placehold.it/300x486'
+    cover_large = 'http://placehold.it/640x1036'
+  end
+
   book = Book.create({
     :_id => "book-#{n}",
     :title => title,
@@ -30,7 +37,9 @@ Book.destroy_all
     :publisher => publisher,
     :description => Faker::Lorem.paragraph,
     :dplaLocation => 'http://source.example.org',
-    :viewer_url => viewer_url
+    :viewer_url => viewer_url,
+    :cover_small => cover_small,
+    :cover_large => cover_large
   }, :without_protection => true)
 
   (1 + rand(3)).times do #Between 1-3 temporal dates for each book

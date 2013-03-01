@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130126012006) do
+ActiveRecord::Schema.define(:version => 20130228233252) do
 
   create_table "books", :force => true do |t|
     t.string "_id",          :null => false
@@ -21,6 +21,8 @@ ActiveRecord::Schema.define(:version => 20130126012006) do
     t.text   "description"
     t.string "dplaLocation"
     t.string "viewer_url"
+    t.string "cover_small"
+    t.string "cover_large"
   end
 
   add_index "books", ["_id"], :name => "index_books_on_@id", :unique => true
