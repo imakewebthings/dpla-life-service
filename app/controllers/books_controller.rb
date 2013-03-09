@@ -74,7 +74,13 @@ class BooksController < ApplicationController
       if params[:query]
         start = (params[:start] || 0).to_i
         limit = (params[:limit] || 10).to_i
-        url = "http://librarycloud.harvard.edu/v1/api/item/?filter=collection:hathitrust_org_pd_bks_online&filter=keyword:#{params[:query]}&limit=#{limit}&start=#{start}"
+        url = 'http://librarycloud.harvard.edu/v1/api/item/?filter=collection:hathitrust_org_pd_bks_online&'
+        query = {
+          :filter => "keyword:#{params[:query]}",
+          :limit => limit,
+          :start => start
+        }
+        url += query.to_query
         json = JSON.parse(open(url).read)
         @limit = limit
         @start = start + limit
