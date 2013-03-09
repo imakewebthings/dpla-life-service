@@ -11,21 +11,23 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130228233252) do
+ActiveRecord::Schema.define(:version => 20130309025556) do
 
   create_table "books", :force => true do |t|
-    t.string "_id",          :null => false
-    t.string "title"
-    t.string "publisher"
-    t.string "creator"
-    t.text   "description"
-    t.string "dplaLocation"
-    t.string "viewer_url"
-    t.string "cover_small"
-    t.string "cover_large"
+    t.string  "source_id",   :null => false
+    t.string  "title"
+    t.string  "publisher"
+    t.string  "creator"
+    t.text    "description"
+    t.string  "source_url"
+    t.string  "viewer_url"
+    t.string  "cover_small"
+    t.string  "cover_large"
+    t.integer "shelfrank"
   end
 
-  add_index "books", ["_id"], :name => "index_books_on_@id", :unique => true
+  add_index "books", ["shelfrank"], :name => "index_books_on_shelfrank"
+  add_index "books", ["source_id"], :name => "index_books_on_@id", :unique => true
 
   create_table "date_ranges", :force => true do |t|
     t.integer "book_id", :null => false

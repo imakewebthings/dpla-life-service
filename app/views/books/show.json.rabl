@@ -1,4 +1,4 @@
 object @book
 
-attributes :_id, :title, :publisher, :creator, :description, :dplaLocation,
-           :viewer_url, :cover_small, :cover_large
+attributes :source_id, :title, :publisher, :creator, :description,
+           :source_url, :viewer_url, :cover_small, :cover_large

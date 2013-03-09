@@ -15,11 +15,13 @@ Book.destroy_all
   (1 + rand(2)).times do # 1 or 2 titles (subtitle)
     title.push Faker::Lorem.words.join(' ').titleize
   end
+  title = title.join(' - ')
 
   publisher = []
   (1 + rand(2)).times do # 1 or 2 publishers
     publisher.push "#{Faker::Lorem.words(2).join(' ').titleize} Publishing"
   end
+  publisher = publisher.join(' - ')
 
   viewer_url = rand(2) == 1 ? 'http://viewer.example.org/' : nil
 
@@ -31,15 +33,16 @@ Book.destroy_all
   end
 
   book = Book.create({
-    :_id => "book-#{n}",
+    :source_id => "book-#{n}",
     :title => title,
     :creator => "#{Faker::Name.last_name}, #{Faker::Name.first_name}",
     :publisher => publisher,
     :description => Faker::Lorem.paragraph,
-    :dplaLocation => 'http://source.example.org',
+    :source_url => 'http://source.example.org',
     :viewer_url => viewer_url,
     :cover_small => cover_small,
-    :cover_large => cover_large
+    :cover_large => cover_large,
+    :shelfrank => rand(98) + 1
   }, :without_protection => true)
 
   (1 + rand(3)).times do #Between 1-3 temporal dates for each book

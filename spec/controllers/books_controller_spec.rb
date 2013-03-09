@@ -6,7 +6,7 @@ describe BooksController do
 
     context 'when book exists' do
       before do
-        get :show, id: book._id
+        get :show, id: book.source_id
       end
 
       it { should respond_with 200 }
@@ -81,7 +81,7 @@ describe BooksController do
 
     describe 'with ids param' do
       before do
-        get :search, ids: [Book.first[:_id], Book.last[:_id]]
+        get :search, ids: [Book.first[:source_id], Book.last[:source_id]]
       end
 
       it { should respond_with 200 }

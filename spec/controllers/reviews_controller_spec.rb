@@ -3,12 +3,12 @@ require 'spec_helper'
 describe ReviewsController do
   let(:user) { create :user }
   let(:book) { create :book }
-  let(:review) { create(:review, book_id: book._id )}
+  let(:review) { create(:review, book_id: book.source_id )}
 
   describe '#index' do
     before do
       review
-      get :index, book_id: book._id
+      get :index, book_id: book.source_id
     end
 
     it { should respond_with 200 }
@@ -29,7 +29,7 @@ describe ReviewsController do
   describe '#create' do
     context 'as an unregistered user' do
       before do
-        post :create, book_id: book._id, review: attributes_for(:review)
+        post :create, book_id: book.source_id, review: attributes_for(:review)
       end
 
       it { should respond_with 401 }
@@ -40,7 +40,7 @@ describe ReviewsController do
     context 'as a registered user' do
       before do
         set_token user.token
-        post :create, book_id: book._id, review: attributes_for(:review)
+        post :create, book_id: book.source_id, review: attributes_for(:review)
       end
 
       it { should respond_with 201 }
@@ -52,7 +52,7 @@ describe ReviewsController do
     context 'with invalid attributes' do
       before do
         set_token user.token
-        post :create, book_id: book._id,
+        post :create, book_id: book.source_id,
                       review: attributes_for(:review, rating: nil)
       end
 
