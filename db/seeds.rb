@@ -32,6 +32,8 @@ Book.destroy_all
     cover_large = 'http://placehold.it/640x1036'
   end
 
+  subjects = ['science', 'mathematics', 'language', 'history', 'misc']
+
   book = Book.create({
     :source_id => "book-#{n}",
     :title => title,
@@ -42,7 +44,8 @@ Book.destroy_all
     :viewer_url => viewer_url,
     :cover_small => cover_small,
     :cover_large => cover_large,
-    :shelfrank => rand(98) + 1
+    :shelfrank => rand(98) + 1,
+    :subjects => subjects.sort_by{rand}[0..1]
   }, :without_protection => true)
 
   (1 + rand(3)).times do #Between 1-3 temporal dates for each book

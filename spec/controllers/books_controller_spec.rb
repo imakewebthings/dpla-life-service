@@ -88,5 +88,16 @@ describe BooksController do
       it { should assign_to(:books).with [Book.first, Book.last] }
       it { should assign_to(:num_found).with 2 }
     end
+
+    describe 'by subject' do
+      before do
+        create :book, :subjects => ['test']
+        get :search, :subject => 'test'
+      end
+
+      it { should respond_with 200 }
+      it { should assign_to(:books).with [Book.last] }
+      it { should assign_to(:num_found).with 1 }
+    end
   end
 end

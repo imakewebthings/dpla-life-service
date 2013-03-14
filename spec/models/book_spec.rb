@@ -26,4 +26,5 @@ describe Book do
   it { should validate_uniqueness_of :source_id }
 
   it { should have_many :temporals }
+  it { should respond_to :subjects }
 end

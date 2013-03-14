@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130309025556) do
+ActiveRecord::Schema.define(:version => 20130314182253) do
 
   create_table "books", :force => true do |t|
     t.string  "source_id",   :null => false
@@ -24,10 +24,12 @@ ActiveRecord::Schema.define(:version => 20130309025556) do
     t.string  "cover_small"
     t.string  "cover_large"
     t.integer "shelfrank"
+    t.string  "subjects"
   end
 
   add_index "books", ["shelfrank"], :name => "index_books_on_shelfrank"
   add_index "books", ["source_id"], :name => "index_books_on_@id", :unique => true
+  add_index "books", ["subjects"], :name => "index_books_on_subjects"
 
   create_table "date_ranges", :force => true do |t|
     t.integer "book_id", :null => false

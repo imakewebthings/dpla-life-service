@@ -11,14 +11,6 @@ class BooksController < ApplicationController
 
   def search
     if params[:query]
-      search_by_query
-    elsif params[:ids]
-      search_by_ids
-    end
-  end
-
-  private
-    def search_by_query
       offset = (params[:start] || 0).to_i
       @limit = (params[:limit] || 10).to_i
       @start =  offset + @limit
@@ -36,9 +28,12 @@ class BooksController < ApplicationController
       end
       
       check_last_page
-    end
-
-    def search_by_ids
+    elsif params[:subject]
+      @limit = (params[:limit] || 10).to_i
+      @start =  -1
+      @books = Book.where('subjects LIKE ?', "%#{params[:subject]}%").all
+      @num_found = @books.length
+    elsif params[:ids]
       @limit = 0
       @start = -1
       unsorted_books = Book.where(:source_id => params[:ids])
@@ -47,21 +42,22 @@ class BooksController < ApplicationController
       end
       @num_found = @books.length
     end
+  end
 
-    def check_last_page
-      if @books.empty? or @books.length < @limit
-        @start = -1
-      end
+  def check_last_page
+    if @books.empty? or @books.length < @limit
+      @start = -1
     end
+  end
 
-    def extend_for_book_source
-      case Rails.configuration.book_source
-      when 'hathi'
-        self.extend HathiBooks
-      when 'openlibrary'
-        self.extend OpenLibraryBooks
-      end
+  def extend_for_book_source
+    case Rails.configuration.book_source
+    when 'hathi'
+      self.extend HathiBooks
+    when 'openlibrary'
+      self.extend OpenLibraryBooks
     end
+  end
 
   module HathiBooks
     def show
@@ -86,23 +82,26 @@ class BooksController < ApplicationController
         @start = start + limit
         @num_found = json['num_found']
         @books = json['docs'].collect {|x| response_to_book x }
-        if @books.empty? or @books.length < @limit
-          @start = -1
-        end
+        check_last_page
+        @books.compact!
       elsif params[:ids]
         # TODO: Can LC get ID batches?
       end
     end
 
+    # Turns a raw JSON response into an OpenStruct object for view rendering
+    # while normalizing data. Items without a title are thrown out.
     def response_to_book(json)
+      return nil unless json and json['title']
+      url = json['url'][0] if json['url']
       OpenStruct.new(
         :source_id => json['id'],
         :title => json['title'],
         :publisher => nil,
         :creator => json['creator'] && json['creator'].join('; '),
         :description => nil,
-        :source_url => json['url'][0],
-        :viewer_url => json['url'][0],
+        :source_url => url,
+        :viewer_url => url,
         :cover_small => nil,
         :cover_large => nil,
         :pub_date => json['pub_date_numeric'],
