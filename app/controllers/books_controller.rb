@@ -10,7 +10,7 @@ class BooksController < ApplicationController
   end
 
   def search
-    if params[:query]
+    if params[:search_type] == 'title'
       offset = (params[:start] || 0).to_i
       @limit = (params[:limit] || 10).to_i
       @start =  offset + @limit
@@ -28,10 +28,10 @@ class BooksController < ApplicationController
       end
       
       check_last_page
-    elsif params[:subject]
+    elsif params[:search_type] == 'subject'
       @limit = (params[:limit] || 10).to_i
       @start =  -1
-      @books = Book.where('subjects LIKE ?', "%#{params[:subject]}%").all
+      @books = Book.where('subjects LIKE ?', "%#{params[:query]}%").all
       @num_found = @books.length
     elsif params[:ids]
       @limit = 0

@@ -29,10 +29,10 @@ describe BooksController do
       5.times { create :book }
     end
 
-    context 'with query param' do
+    context 'by title' do
       context 'with empty result set' do
         before do
-          get :search, query: 'empty'
+          get :search, query: 'empty', search_type: 'title'
         end
 
         it { should respond_with 200 }
@@ -46,7 +46,7 @@ describe BooksController do
       context 'with results' do
         context 'on first page' do
           before do
-            get :search, query: 'foo', start: 0, limit: 2
+            get :search, query: 'foo', search_type: 'title', start: 0, limit: 2
           end
 
           it { should assign_to(:books).with Book.offset(0).limit(2) }
@@ -57,7 +57,7 @@ describe BooksController do
 
         context 'on middle page' do
           before do
-            get :search, query: 'foo', start: 2, limit: 2
+            get :search, query: 'foo', search_type: 'title', start: 2, limit: 2
           end
 
           it { should assign_to(:books).with Book.offset(2).limit(2) }
@@ -68,7 +68,7 @@ describe BooksController do
 
         context 'on last page' do
           before do
-            get :search, query: 'foo', start: 4, limit: 2
+            get :search, query: 'foo', search_type: 'title', start: 4, limit: 2
           end
 
           it { should assign_to(:books).with Book.offset(4).limit(2) }
@@ -92,7 +92,7 @@ describe BooksController do
     describe 'by subject' do
       before do
         create :book, :subjects => ['test']
-        get :search, :subject => 'test'
+        get :search, query: 'test', search_type: 'subject'
       end
 
       it { should respond_with 200 }
