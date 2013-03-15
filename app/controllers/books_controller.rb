@@ -97,7 +97,7 @@ class BooksController < ApplicationController
     # while normalizing data. Items without a title are thrown out.
     def response_to_book(json)
       return nil unless json and json['title']
-      url = json['url'][0] if json['url']
+      url = json['url'][0][/http.*$/] if json['url']
       puts json['pages_numeric']
       OpenStruct.new(
         :source_id => json['id'],
@@ -106,7 +106,7 @@ class BooksController < ApplicationController
         :creator => json['creator'] && json['creator'].join('; '),
         :description => nil,
         :source_url => url,
-        :viewer_url => url,
+        :viewer_url => url + '?urlappend=%3Bui=embed',
         :cover_small => nil,
         :cover_large => nil,
         :pub_date => json['pub_date_numeric'],
