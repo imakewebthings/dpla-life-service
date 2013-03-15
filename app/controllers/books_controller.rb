@@ -10,7 +10,7 @@ class BooksController < ApplicationController
   end
 
   def search
-    if params[:search_type] == 'title'
+    if params[:search_type] == 'keyword'
       offset = (params[:start] || 0).to_i
       @limit = (params[:limit] || 10).to_i
       @start =  offset + @limit
@@ -72,10 +72,14 @@ class BooksController < ApplicationController
         limit = (params[:limit] || 10).to_i
         url = 'http://librarycloud.harvard.edu/v1/api/item/?filter=collection:hathitrust_org_pd_bks_online&'
         query = {
-          :filter => "keyword:#{params[:query]}",
           :limit => limit,
           :start => start
         }
+        if params[:search_type] == 'subject'
+          query[:filter] = "note:#{params[:query]}"
+        else
+          query[:filter] = "keyword:#{params[:query]}"
+        end
         url += query.to_query
         json = JSON.parse(open(url).read)
         @limit = limit
@@ -94,6 +98,7 @@ class BooksController < ApplicationController
     def response_to_book(json)
       return nil unless json and json['title']
       url = json['url'][0] if json['url']
+      puts json['pages_numeric']
       OpenStruct.new(
         :source_id => json['id'],
         :title => json['title'],
@@ -105,8 +110,24 @@ class BooksController < ApplicationController
         :cover_small => nil,
         :cover_large => nil,
         :pub_date => json['pub_date_numeric'],
-        :shelfrank => json['shelfrank'] || 1
+        :shelfrank => json['shelfrank'] || 1,
+        :subjects => json['note'],
+        :measurement_height_numeric => transform_age_to_height(json['pub_date_numeric']),
+        :measurement_page_numeric => json['pages_numeric']
       )
+    end
+
+    def transform_age_to_height(pub_date)
+      min_height = 20
+      max_height = 39
+      min_pub = 1850
+      max_pub = 2013
+      pub_range = max_pub - min_pub
+      height_range = max_height - min_height
+      return min_height unless pub_date
+      translated_value = (((pub_date - min_pub) * height_range) / pub_range) + min_height
+      max_height - translated_value + min_height
+
     end
   end
 
