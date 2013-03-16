@@ -45,15 +45,9 @@ Book.destroy_all
     :cover_small => cover_small,
     :cover_large => cover_large,
     :shelfrank => rand(98) + 1,
-    :subjects => subjects.sort_by{rand}[0..1]
+    :subjects => subjects.sort_by{rand}[0..1],
+    :pub_date => Time.now.year - rand(100),
+    :measurement_height_numeric => rand(19) + 20,
+    :measurement_page_numeric => rand(300) + 100
   }, :without_protection => true)
-
-  (1 + rand(3)).times do #Between 1-3 temporal dates for each book
-    date = "#{1800 + rand(200)}-02-14"
-    DateRange.create({
-      :book_id => book.id,
-      :start => date,
-      :end => date
-    }, :without_protection => true)
-  end
 end

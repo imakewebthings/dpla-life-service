@@ -16,9 +16,6 @@
 #
 
 class Book < ActiveRecord::Base
-  has_many :temporals, class_name: 'DateRange', dependent: :destroy
-
   validates :source_id, presence: true, uniqueness: true
-
   serialize :subjects
 end
