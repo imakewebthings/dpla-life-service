@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130316012111) do
+ActiveRecord::Schema.define(:version => 20130319214752) do
 
   create_table "books", :force => true do |t|
     t.string  "source_id",                  :null => false
@@ -28,6 +28,7 @@ ActiveRecord::Schema.define(:version => 20130316012111) do
     t.integer "pub_date"
     t.integer "measurement_page_numeric"
     t.integer "measurement_height_numeric"
+    t.string  "source_library"
   end
 
   add_index "books", ["shelfrank"], :name => "index_books_on_shelfrank"

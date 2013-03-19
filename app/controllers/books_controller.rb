@@ -113,7 +113,8 @@ class BooksController < ApplicationController
         :shelfrank => json['shelfrank'] || 1,
         :subjects => json['note'],
         :measurement_height_numeric => transform_age_to_height(json['pub_date_numeric']),
-        :measurement_page_numeric => json['pages_numeric']
+        :measurement_page_numeric => json['pages_numeric'],
+        :source_library => 'Hathi Trust'
       )
     end
 

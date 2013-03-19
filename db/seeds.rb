@@ -48,6 +48,7 @@ Book.destroy_all
     :subjects => subjects.sort_by{rand}[0..1],
     :pub_date => Time.now.year - rand(100),
     :measurement_height_numeric => rand(19) + 20,
-    :measurement_page_numeric => rand(300) + 100
+    :measurement_page_numeric => rand(300) + 100,
+    :source_library => 'Local Mock'
   }, :without_protection => true)
 end
