@@ -33,16 +33,6 @@ class ShelvesController < ApplicationController
     end
   end
 
-  def push
-    if @shelf.user == @user
-      @shelf.book_ids.push(params[:book_id]).uniq!
-      @shelf.save
-      render :show, status: 201
-    else
-      head 401
-    end
-  end
-
   private
     def get_user
       @user = User.find params[:user_id]

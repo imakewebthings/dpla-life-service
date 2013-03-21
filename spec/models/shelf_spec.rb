@@ -26,6 +26,8 @@ describe Shelf do
   it { should validate_presence_of :name }
   it { should validate_presence_of :user_id }
 
+  it { should have_many :shelf_books }
+
   it 'turns nil values of book_ids into an empty array' do
     shelf = create :shelf
     shelf.book_ids.should eq []

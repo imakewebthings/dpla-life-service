@@ -8,7 +8,7 @@ Dplalife::Application.routes.draw do
   end
   resources :reviews, only: [:show, :update, :destroy]
   resources :shelves, only: [:show, :update, :destroy] do
-    post 'books', on: :member, action: :push
+    resources :books, controller: 'shelf_books', only: [:create]
   end
   get 'search' => 'books#search'
 

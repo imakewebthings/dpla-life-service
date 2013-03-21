@@ -12,11 +12,11 @@
 class Shelf < ActiveRecord::Base
   attr_accessible :name, :description, :book_ids
 
-  serialize :book_ids
-
   before_save :ensure_book_id_array
 
   belongs_to :user
+  has_many :shelf_books
+  serialize :book_ids
 
   validates :name, presence: true
   validates :user_id, presence: true
