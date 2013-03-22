@@ -15,7 +15,7 @@ class Shelf < ActiveRecord::Base
   before_save :ensure_book_id_array
 
   belongs_to :user
-  has_many :shelf_books
+  has_many :shelf_books, dependent: :destroy
   serialize :book_ids
 
   validates :name, presence: true

@@ -98,7 +98,6 @@ class BooksController < ApplicationController
     def response_to_book(json)
       return nil unless json and json['title']
       url = json['url'][0][/http.*$/] if json['url']
-      puts json['pages_numeric']
       OpenStruct.new(
         :source_id => json['id'],
         :title => json['title'],

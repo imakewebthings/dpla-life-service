@@ -5,10 +5,11 @@ Dplalife::Application.routes.draw do
   resource :session, only: [:create, :destroy, :show]
   resources :books, only: [:show] do
     resources :reviews, only: [:index, :create]
+    resource :neighbors, only: [:show]
   end
   resources :reviews, only: [:show, :update, :destroy]
   resources :shelves, only: [:show, :update, :destroy] do
-    resources :books, controller: 'shelf_books', only: [:create]
+    resources :books, controller: 'shelf_books', only: [:create, :destroy]
   end
   get 'search' => 'books#search'
 
