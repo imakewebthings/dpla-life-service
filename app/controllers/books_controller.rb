@@ -13,7 +13,7 @@ class BooksController < ApplicationController
     if params[:search_type] == 'keyword'
       offset = (params[:start] || 0).to_i
       @limit = (params[:limit] || 10).to_i
-      @start =  offset + @limit
+      @start = offset + @limit
 
       if params[:query] == 'empty'
         @books = []
@@ -30,8 +30,17 @@ class BooksController < ApplicationController
       check_last_page
     elsif params[:search_type] == 'subject'
       @limit = (params[:limit] || 10).to_i
-      @start =  -1
+      @start = -1
       @books = Book.where('subjects LIKE ?', "%#{params[:query]}%").all
+      @num_found = @books.length
+    elsif params[:search_type] == 'subject_union'
+      @limit = (params[:limit] || 10).to_i
+      @start = -1
+      book = Book.find_by_source_id params[:query]
+      @books = book.subjects.collect do |subject|
+        Book.where('subjects LIKE ?', "%#{subject}%").all
+      end.flatten.uniq
+      @books.delete book
       @num_found = @books.length
     elsif params[:ids]
       @limit = 0
@@ -67,7 +76,7 @@ class BooksController < ApplicationController
     end
 
     def search
-      if params[:query]
+      if ['subject', 'keyword'].include? params[:search_type]
         start = (params[:start] || 0).to_i
         limit = (params[:limit] || 10).to_i
         url = 'http://librarycloud.harvard.edu/v1/api/item/?filter=collection:hathitrust_org_pd_bks_online&'
@@ -88,6 +97,8 @@ class BooksController < ApplicationController
         @books = json['docs'].collect {|x| response_to_book x }
         check_last_page
         @books.compact!
+      elsif params[:search_type] == 'subject_union'
+        respond_to_subject_union
       elsif params[:ids]
         # TODO: Can LC get ID batches?
       end
@@ -127,7 +138,39 @@ class BooksController < ApplicationController
       return min_height unless pub_date
       translated_value = (((pub_date - min_pub) * height_range) / pub_range) + min_height
       max_height - translated_value + min_height
+    end
 
+    def respond_to_subject_union
+      url = 'http://librarycloud.harvard.edu/v1/api/item/' + params[:query]
+      book = JSON.parse(open(url).read)
+      subjects = book['docs'][0] && book['docs'][0]['note']
+      if subjects.blank?
+        @num_found = 0
+        @books = []
+        @limit = 0
+        @start = -1
+      else
+        start = (params[:start] || 0).to_i
+        limit = (params[:limit] || 10).to_i
+        url = 'http://librarycloud.harvard.edu/v1/api/item/?filter=collection:hathitrust_org_pd_bks_online&'
+        query = {
+          :limit => limit,
+          :start => start
+        }
+        @num_found = 0
+        @books = subjects.collect do |subject|
+          query[:filter] = "note:#{subject}"
+          subject_url = url + query.to_query
+          json = JSON.parse(open(subject_url).read)
+          @num_found += json['num_found']
+          json['docs']
+        end.flatten.uniq do |book|
+          book['id']
+        end.collect {|book| response_to_book book }
+        @limit = limit
+        @start = start + limit
+        check_last_page
+      end
     end
   end
 

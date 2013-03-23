@@ -102,5 +102,19 @@ describe BooksController do
       it { should assign_to(:books).with [Book.last] }
       it { should assign_to(:num_found).with 1 }
     end
+
+    describe 'by subject union' do
+      let!(:target_book) { create :book, :subjects => ['foo', 'bar'] }
+      let!(:book2) { create :book, :subjects => ['foo'] }
+      let!(:book3) { create :book, :subjects => ['bar'] }
+
+      before do
+        get :search, search_type: 'subject_union',
+                     query: target_book.source_id
+      end
+
+      it { should respond_with 200 }
+      it { should assign_to(:books).with [book2, book3] }
+    end
   end
 end
