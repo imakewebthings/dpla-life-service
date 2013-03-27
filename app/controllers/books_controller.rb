@@ -11,184 +11,77 @@ class BooksController < ApplicationController
 
   def search
     if params[:search_type] == 'keyword'
-      offset = (params[:start] || 0).to_i
-      @limit = (params[:limit] || 10).to_i
-      @start = offset + @limit
-
-      if params[:query] == 'empty'
-        @books = []
-        @num_found = 0
-      else
-        if (params[:start] == '-1')
-          @books = Book.all
-        else
-          @books = Book.offset(offset).limit(@limit)
-        end
-        @num_found = Book.all.length
-      end
-      
-      check_last_page
+      search_by_keyword
     elsif params[:search_type] == 'subject'
-      @limit = (params[:limit] || 10).to_i
-      @start = -1
-      @books = Book.where('subjects LIKE ?', "%#{params[:query]}%").all
-      @num_found = @books.length
+      search_by_subject
     elsif params[:search_type] == 'subject_union'
-      @limit = (params[:limit] || 10).to_i
-      @start = -1
-      book = Book.find_by_source_id params[:query]
-      @books = book.subjects.collect do |subject|
-        Book.where('subjects LIKE ?', "%#{subject}%").all
-      end.flatten.uniq
-      @books.delete book
-      @num_found = @books.length
+      search_by_subject_union
     elsif params[:ids]
-      @limit = 0
-      @start = -1
-      unsorted_books = Book.where(:source_id => params[:ids])
-      @books = params[:ids].collect do |id|
-        unsorted_books.detect {|x| x[:source_id] == id}
-      end
-      @num_found = @books.length
-    end
-  end
-
-  def check_last_page
-    if @books.empty? or @books.length < @limit
-      @start = -1
+      search_by_ids
     end
   end
 
   def extend_for_book_source
     case Rails.configuration.book_source
     when 'hathi'
-      self.extend HathiBooks
+      require 'books/hathi'
+      self.extend Hathi
     when 'openlibrary'
       self.extend OpenLibraryBooks
     end
   end
 
-  module HathiBooks
-    def show
-      url = "http://librarycloud.harvard.edu/v1/api/item/#{params[:id]}"
-      json = JSON.parse(open(url).read)['docs'][0]
-      @book = response_to_book json
-    end
+  def search_by_keyword
+    offset = (params[:start] || 0).to_i
+    @limit = (params[:limit] || 10).to_i
+    @start = offset + @limit
 
-    def search
-      if ['subject', 'keyword'].include? params[:search_type]
-        start = (params[:start] || 0).to_i
-        limit = (params[:limit] || 10).to_i
-        url = 'http://librarycloud.harvard.edu/v1/api/item/?filter=collection:hathitrust_org_pd_bks_online&'
-        query = {
-          :limit => limit,
-          :start => start
-        }
-        if params[:search_type] == 'subject'
-          query[:filter] = "note:#{params[:query]}"
-        else
-          query[:filter] = "keyword:#{params[:query]}"
-        end
-        url += query.to_query
-        json = JSON.parse(open(url).read)
-        @limit = limit
-        @start = start + limit
-        @num_found = json['num_found']
-        @books = json['docs'].collect {|x| response_to_book x }
-        check_last_page
-        @books.compact!
-      elsif params[:search_type] == 'subject_union'
-        respond_to_subject_union
-      elsif params[:ids]
-        # TODO: Can LC get ID batches?
-      end
-    end
-
-    # Turns a raw JSON response into an OpenStruct object for view rendering
-    # while normalizing data. Items without a title are thrown out.
-    def response_to_book(json)
-      return nil unless json and json['title']
-      url = json['url'][0][/http.*$/] if json['url']
-      OpenStruct.new(
-        :source_id => json['id'],
-        :title => json['title'],
-        :publisher => nil,
-        :creator => json['creator'] && json['creator'].join('; '),
-        :description => nil,
-        :source_url => url,
-        :viewer_url => url + '?urlappend=%3Bui=embed',
-        :cover_small => nil,
-        :cover_large => nil,
-        :pub_date => json['pub_date_numeric'],
-        :shelfrank => json['shelfrank'] || 1,
-        :subjects => json['note'],
-        :measurement_height_numeric => transform_age_to_height(json['pub_date_numeric']),
-        :measurement_page_numeric => json['pages_numeric'],
-        :source_library => 'Hathi Trust'
-      )
-    end
-
-    def transform_age_to_height(pub_date)
-      min_height = 20
-      max_height = 39
-      min_pub = 1850
-      max_pub = 2013
-      pub_range = max_pub - min_pub
-      height_range = max_height - min_height
-      return min_height unless pub_date
-      translated_value = (((pub_date - min_pub) * height_range) / pub_range) + min_height
-      max_height - translated_value + min_height
-    end
-
-    def respond_to_subject_union
-      url = 'http://librarycloud.harvard.edu/v1/api/item/' + params[:query]
-      book = JSON.parse(open(url).read)
-      subjects = book['docs'][0] && book['docs'][0]['note']
-      if subjects.blank?
-        @num_found = 0
-        @books = []
-        @limit = 0
-        @start = -1
+    if params[:query] == 'empty'
+      @books = []
+      @num_found = 0
+    else
+      if (params[:start] == '-1')
+        @books = Book.all
       else
-        start = (params[:start] || 0).to_i
-        limit = (params[:limit] || 10).to_i
-        url = 'http://librarycloud.harvard.edu/v1/api/item/?filter=collection:hathitrust_org_pd_bks_online&'
-        query = {
-          :limit => limit,
-          :start => start
-        }
-        @num_found = 0
-        @books = subjects.collect do |subject|
-          query[:filter] = "note:#{subject}"
-          subject_url = url + query.to_query
-          json = JSON.parse(open(subject_url).read)
-          @num_found += json['num_found']
-          json['docs']
-        end.flatten.uniq do |book|
-          book['id']
-        end.collect {|book| response_to_book book }
-        @limit = limit
-        @start = start + limit
-        check_last_page
+        @books = Book.offset(offset).limit(@limit)
       end
+      @num_found = Book.all.length
     end
+    
+    check_last_page
   end
 
-  module OpenLibraryBooks
-    def show
-      book_json = Openlibrary::Data.find_by_isbn params[:id]
-      @book = OpenStruct.new(
-        :source_id => params[:id],
-        :title => [book_json.title, book_json.subtitle].compact,
-        :publisher => book_json.publishers.map{|p| p['name'] },
-        :creator => book_json.authors[0]['name'],
-        :description => nil,
-        :source_url => book_json.url,
-        :viewer_url => book_json.url
-      )
-    end
+  def search_by_subject
+    @limit = (params[:limit] || 10).to_i
+    @start = -1
+    @books = Book.where('subjects LIKE ?', "%#{params[:query]}%").all
+    @num_found = @books.length
+  end
 
-    def search
+  def search_by_subject_union
+    @limit = (params[:limit] || 10).to_i
+    @start = -1
+    book = Book.find_by_source_id params[:query]
+    @books = book.subjects.collect do |subject|
+      Book.where('subjects LIKE ?', "%#{subject}%").all
+    end.flatten.uniq
+    @books.delete book
+    @num_found = @books.length
+  end
+
+  def search_by_ids
+    @limit = 0
+    @start = -1
+    unsorted_books = Book.where(:source_id => params[:ids])
+    @books = params[:ids].collect do |id|
+      unsorted_books.detect {|x| x[:source_id] == id}
+    end
+    @num_found = @books.length
+  end
+
+  def check_last_page
+    if @books.empty? or @books.length < @limit
+      @start = -1
     end
   end
 end
