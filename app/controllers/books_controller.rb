@@ -16,6 +16,8 @@ class BooksController < ApplicationController
       search_by_subject
     elsif params[:search_type] == 'subject_union'
       search_by_subject_union
+    elsif params[:search_type] == 'subject_intersection'
+      search_by_subject_intersection
     elsif params[:ids]
       search_by_ids
     end
@@ -66,6 +68,23 @@ class BooksController < ApplicationController
       Book.where('subjects LIKE ?', "%#{subject}%").all
     end.flatten.uniq
     @books.delete book
+    @num_found = @books.length
+  end
+
+  def search_by_subject_intersection
+    @limit = (params[:limit] || 10).to_i
+    @start = -1
+    book = Book.find_by_source_id params[:query]
+    if book.subjects.blank?
+      @books = []
+    else
+      @books = Book
+      book.subjects.each do |subject|
+        @books = @books.where('subjects LIKE ?', "%#{subject}%")
+      end
+      @books = @books.all
+      @books.delete book
+    end
     @num_found = @books.length
   end
 

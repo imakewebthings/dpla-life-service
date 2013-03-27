@@ -7,7 +7,7 @@ BooksController.class_eval do
     def show
       url = "http://librarycloud.harvard.edu/v1/api/item/#{params[:id]}"
       json = JSON.parse(open(url).read)['docs'][0]
-      @book = response_to_book json
+      @book = json_to_book json
     end
 
     def search_by_keyword
@@ -32,15 +32,9 @@ BooksController.class_eval do
         @limit = 0
         @start = -1
       else
-        url = 'http://librarycloud.harvard.edu/v1/api/item/?filter=collection:hathitrust_org_pd_bks_online&'
-        query = {
-          :limit => param_limit,
-          :start => param_start
-        }
         @num_found = 0
         @books = subjects.collect do |subject|
-          query[:filter] = "note:#{subject}"
-          subject_url = url + query.to_query
+          subject_url = build_search_url :filter => "note:#{subject}"
           json = JSON.parse(open(subject_url).read)
           @num_found += json['num_found']
           json['docs']
