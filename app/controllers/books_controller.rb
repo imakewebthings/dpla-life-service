@@ -1,7 +1,3 @@
-require 'ostruct'
-require 'open-uri'
-require 'json'
-
 class BooksController < ApplicationController
   before_filter :extend_for_book_source
 
