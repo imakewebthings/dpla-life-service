@@ -23,14 +23,9 @@ BooksController.class_eval do
     end
 
     def search_by_subject_union
-      url = 'http://librarycloud.harvard.edu/v1/api/item/' + params[:query]
-      book = JSON.parse(open(url).read)
-      subjects = book['docs'][0] && book['docs'][0]['note']
+      subjects = fetch_book_subjects params[:query]
       if subjects.blank?
-        @num_found = 0
-        @books = []
-        @limit = 0
-        @start = -1
+        empty_response
       else
         @num_found = 0
         @books = subjects.collect do |subject|
@@ -47,6 +42,21 @@ BooksController.class_eval do
       end
     end
 
+    def search_by_subject_intersection
+      subjects = fetch_book_subjects params[:query]
+      if subjects.blank?
+        empty_response
+      else
+        url = build_search_url
+        subject_filters = subjects.collect do |subject|
+          { :filter => "note:#{subject}" }.to_query
+        end
+        url = url + '&' + subject_filters.join('&')
+        json = JSON.parse(open(url).read)
+        json_to_response json
+      end
+    end
+
     def search_by_ids
       # TODO: Once LC supports batch ID query
     end
@@ -59,7 +69,7 @@ BooksController.class_eval do
       limit = (params[:limit] || 10).to_i
     end
 
-    def build_search_url(query)
+    def build_search_url(query = {})
       url = 'http://librarycloud.harvard.edu/v1/api/item/?filter=collection:hathitrust_org_pd_bks_online&'
       params = { :limit => param_limit, :start => param_start }.merge query
       url + params.to_query
@@ -108,6 +118,19 @@ BooksController.class_eval do
       return min_height unless pub_date
       translated_value = (((pub_date - min_pub) * height_range) / pub_range) + min_height
       max_height - translated_value + min_height
+    end
+
+    def fetch_book_subjects(book_id)
+      url = 'http://librarycloud.harvard.edu/v1/api/item/' + book_id
+      book = JSON.parse(open(url).read)
+      book['docs'][0] && book['docs'][0]['note']
+    end
+
+    def empty_response
+      @num_found = 0
+      @books = []
+      @limit = 0
+      @start = -1
     end
   end
 end
