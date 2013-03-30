@@ -8,6 +8,10 @@ class BooksController < ApplicationController
   def search
     if params[:search_type] == 'keyword'
       search_by_keyword
+    elsif params[:search_type] == 'title'
+      search_by_title
+    elsif params[:search_type] == 'author'
+      search_by_author
     elsif params[:search_type] == 'subject'
       search_by_subject
     elsif params[:search_type] == 'subject_union'
@@ -47,6 +51,20 @@ class BooksController < ApplicationController
     end
     
     check_last_page
+  end
+
+  def search_by_title
+    @limit = (params[:limit] || 10).to_i
+    @start = -1
+    @books = Book.where('title LIKE ?', "%#{params[:query]}%").all
+    @num_found = @books.length
+  end
+
+  def search_by_author
+    @limit = (params[:limit] || 10).to_i
+    @start = -1
+    @books = Book.where('creator LIKE ?', "%#{params[:query]}%").all
+    @num_found = @books.length
   end
 
   def search_by_subject

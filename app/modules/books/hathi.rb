@@ -16,6 +16,18 @@ BooksController.class_eval do
       json_to_response json
     end
 
+    def search_by_title
+      url = build_search_url :filter => "title_keyword:#{params[:query]}"
+      json = JSON.parse(open(url).read)
+      json_to_response json
+    end
+
+    def search_by_author
+      url = build_search_url :filter => "creator_keyword:#{params[:query]}"
+      json = JSON.parse(open(url).read)
+      json_to_response json
+    end
+
     def search_by_subject
       url = build_search_url :filter => "note:#{params[:query]}"
       json = JSON.parse(open(url).read)
