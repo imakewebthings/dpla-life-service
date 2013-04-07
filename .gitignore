@@ -19,3 +19,4 @@ bundler_stubs/
 .env
 .DS_Store
 ._*
+public/
