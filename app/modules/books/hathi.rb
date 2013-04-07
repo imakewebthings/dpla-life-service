@@ -70,7 +70,9 @@ BooksController.class_eval do
     end
 
     def search_by_ids
-      # TODO: Once LC supports batch ID query
+      url = build_search_url :filter => "id:#{params[:ids].join(',')}"
+      json = JSON.parse(open(url).read)
+      json_to_response json
     end
 
     def param_start
