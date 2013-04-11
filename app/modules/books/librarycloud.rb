@@ -114,7 +114,7 @@ BooksController.class_eval do
         :creator => json['creator'] && json['creator'].join('; '),
         :description => nil,
         :source_url => url,
-        :viewer_url => url + '?urlappend=%3Bui=embed',
+        :viewer_url => json['online_avail'] && (url + '?urlappend=%3Bui=embed'),
         :cover_small => nil,
         :cover_large => nil,
         :pub_date => json['pub_date_numeric'],
