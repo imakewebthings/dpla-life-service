@@ -25,11 +25,9 @@ class BooksController < ApplicationController
 
   def extend_for_book_source
     case Rails.configuration.book_source
-    when 'hathi'
-      require 'books/hathi'
-      self.extend Hathi
-    when 'openlibrary'
-      self.extend OpenLibraryBooks
+    when 'librarycloud'
+      require 'books/librarycloud'
+      self.extend Librarycloud
     end
   end
 

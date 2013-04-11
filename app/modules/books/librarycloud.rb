@@ -1,11 +1,11 @@
 BooksController.class_eval do
-  module Hathi
+  module Librarycloud
     require 'ostruct'
     require 'open-uri'
     require 'json'
 
     def show
-      url = "http://librarycloud.harvard.edu/v1/api/item/#{params[:id]}"
+      url = base_url + "/v1/api/item/#{params[:id]}"
       json = JSON.parse(open(url).read)['docs'][0]
       @book = json_to_book json
     end
@@ -84,9 +84,13 @@ BooksController.class_eval do
     end
 
     def build_search_url(query = {})
-      url = 'http://librarycloud.harvard.edu/v1/api/item/?filter=collection:hathitrust_org_pd_bks_online&'
+      url = base_url + '/v1/api/item/?filter=collection:hathitrust_org_pd_bks_online,archive_org_pd_bks_online,dp_la_books_online&'
       params = { :limit => param_limit, :start => param_start }.merge query
       url + params.to_query
+    end
+
+    def base_url
+      "http://librarycloud.harvard.edu"
     end
 
     def json_to_response(json)
@@ -118,7 +122,7 @@ BooksController.class_eval do
         :subjects => json['note'],
         :measurement_height_numeric => age_to_height(json['pub_date_numeric']),
         :measurement_page_numeric => json['pages_numeric'],
-        :source_library => 'Hathi Trust'
+        :source_library => printable_source_record(json)
       )
     end
 
@@ -135,7 +139,7 @@ BooksController.class_eval do
     end
 
     def fetch_book_subjects(book_id)
-      url = 'http://librarycloud.harvard.edu/v1/api/item/' + book_id
+      url = base_url + '/v1/api/item/' + book_id
       book = JSON.parse(open(url).read)
       book['docs'][0] && book['docs'][0]['note']
     end
@@ -145,6 +149,17 @@ BooksController.class_eval do
       @books = []
       @limit = 0
       @start = -1
+    end
+
+    def printable_source_record(json)
+      return case json['source_record']['collection']
+      when 'dp_la_books_online'
+        'DPLA'
+      when 'archive_org_pd_bks_online'
+        'Internet Archive'
+      when 'hathitrust_org_pd_bks_online'
+        'Hathi Trust'
+      end
     end
   end
 end
