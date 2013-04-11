@@ -154,7 +154,7 @@ BooksController.class_eval do
     def printable_source_record(json)
       return case json['source_record']['collection']
       when 'dp_la_books_online'
-        'DPLA'
+        'Biodiversity Heritage Library via DPLA'
       when 'archive_org_pd_bks_online'
         'Internet Archive'
       when 'hathitrust_org_pd_bks_online'
