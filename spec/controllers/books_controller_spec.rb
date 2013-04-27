@@ -84,7 +84,8 @@ describe BooksController do
 
     describe 'with ids param' do
       before do
-        get :search, ids: [Book.first[:source_id], Book.last[:source_id]]
+        get :search, search_type: 'ids',
+                     query: "#{Book.first[:source_id]},#{Book.last[:source_id]}"
       end
 
       it { should respond_with 200 }

@@ -16,10 +16,11 @@ describe NeighborsController do
 
       it { should redirect_to controller: 'books',
                               action: 'search',
-                              ids: [
+                              search_type: 'ids',
+                              query: [
                                 shelf2.shelf_books.last.book_id,
                                 shelf.shelf_books.last.book_id
-                              ] }
+                              ].join(',') }
     end
 
     context 'when books has no neighbors' do
@@ -28,7 +29,7 @@ describe NeighborsController do
         get :show, book_id: shelf_book.book_id
       end
 
-      it { should respond_with 404 }
+      it { should respond_with 204 }
     end
   end
 end

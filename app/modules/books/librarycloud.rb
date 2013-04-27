@@ -70,9 +70,13 @@ BooksController.class_eval do
     end
 
     def search_by_ids
-      url = build_search_url :filter => "id:#{params[:ids].join(',')}"
-      json = JSON.parse(open(url).read)
-      json_to_response json
+      if params[:query].blank?
+        empty_response
+      else
+        url = build_search_url :filter => "id:#{params[:query]}"
+        json = JSON.parse(open(url).read)
+        json_to_response json
+      end
     end
 
     def param_start

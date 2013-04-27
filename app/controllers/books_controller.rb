@@ -18,7 +18,7 @@ class BooksController < ApplicationController
       search_by_subject_union
     elsif params[:search_type] == 'subject_intersection'
       search_by_subject_intersection
-    elsif params[:ids]
+    elsif params[:search_type] == 'ids'
       search_by_ids
     end
   end
@@ -103,8 +103,9 @@ class BooksController < ApplicationController
   def search_by_ids
     @limit = 0
     @start = -1
-    unsorted_books = Book.where(:source_id => params[:ids])
-    @books = params[:ids].collect do |id|
+    book_ids = params[:query].split(',')
+    unsorted_books = Book.where(:source_id => book_ids)
+    @books = book_ids.collect do |id|
       unsorted_books.detect {|x| x[:source_id] == id}
     end
     @num_found = @books.length

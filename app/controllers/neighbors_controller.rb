@@ -7,9 +7,12 @@ class NeighborsController < ApplicationController
     book_ids.delete params[:book_id]
 
     if book_ids.empty?
-      head 404
+      head 204
     else
-      redirect_to controller: 'books', action: 'search', ids: book_ids
+      redirect_to controller: 'books',
+                  action: 'search',
+                  search_type: 'ids',
+                  query: book_ids.join(',')
     end
   end
 end
