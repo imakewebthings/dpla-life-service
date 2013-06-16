@@ -8,6 +8,7 @@ Dplalife::Application.routes.draw do
     resource :neighbors, only: [:show]
     resources :readings, controller: 'book_readings', only: [:create]
   end
+  resources :readings, controller: 'book_readings', only: [:index]
   resources :reviews, only: [:show, :update, :destroy]
   resources :shelves, only: [:show, :update, :destroy] do
     resources :books, controller: 'shelf_books', only: [:create, :destroy]
