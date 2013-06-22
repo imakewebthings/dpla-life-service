@@ -41,4 +41,5 @@ Dplalife::Application.configure do
 
   # Always use local mock book data for tests
   config.book_source = 'local'
+  config.dpla_api_key = 'mockkey'
 end

@@ -87,5 +87,7 @@ module Dplalife
     # Setting for which data source to use. Reads from environment variables
     # by default but this makes it easy to override in test environmnet.
     config.book_source = ENV['BOOK_SOURCE']
+
+    config.dpla_api_key = ENV['DPLA_API_KEY']
   end
 end

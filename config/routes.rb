@@ -13,6 +13,9 @@ Dplalife::Application.routes.draw do
   resources :shelves, only: [:show, :update, :destroy] do
     resources :books, controller: 'shelf_books', only: [:create, :destroy]
   end
+  resources 'dpla-items', as: 'dpla_items',
+                          controller: 'dpla_items',
+                          only: [:index, :show]
   get 'search' => 'books#search'
 
   # The priority is based upon order of creation:

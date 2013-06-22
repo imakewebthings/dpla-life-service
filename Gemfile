@@ -29,6 +29,7 @@ group :test do
   gem 'rb-fsevent', :require => false
   gem 'shoulda-matchers', '~> 1.4.1'
   gem 'spork', '~> 0.9.2'
+  gem 'webmock', '~> 1.11.0'
 end
 
 group :assets do
