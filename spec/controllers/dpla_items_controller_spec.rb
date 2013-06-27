@@ -3,7 +3,7 @@ require 'spec_helper'
 describe DplaItemsController do
   describe '#index' do
     before do
-      @stub = stub_request(:get, "http://api.dp.la/v2/items?api_key=mockkey&q=thing&sourceResource.type=image")
+      @stub = stub_request(:get, "http://api.dp.la/v2/items?api_key=mockkey&q=thing&sourceResource.type=image+OR+sound+OR+moving+image&page_size=20")
         .to_return(body: '{}')
       get :index, q: 'thing'
     end

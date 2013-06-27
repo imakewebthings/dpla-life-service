@@ -20,7 +20,7 @@ class DplaItemsController < ApplicationController
       [ base_url,
         "items?api_key=#{Rails.configuration.dpla_api_key}&",
         params.slice(:q).to_query,
-        '&sourceResource.type=image'
+        '&sourceResource.type=image+OR+sound+OR+moving+image&page_size=20'
       ].join
     end
 
