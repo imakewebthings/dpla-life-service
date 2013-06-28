@@ -76,6 +76,7 @@ BooksController.class_eval do
         url = build_search_url :filter => "id:#{params[:query]}"
         json = JSON.parse(open(url).read)
         json_to_response json
+        sort_by_original_ids
       end
     end
 
@@ -163,6 +164,17 @@ BooksController.class_eval do
         'Internet Archive'
       when 'hathitrust_org_pd_bks_online'
         'Hathi Trust'
+      end
+    end
+
+    def sort_by_original_ids
+      original_ids = params[:query].split ','
+      lookup = {}
+      original_ids.each_with_index do |id, index|
+        lookup[id] = index
+      end
+      @books.sort_by! do |book|
+        lookup.fetch book.source_id
       end
     end
   end
