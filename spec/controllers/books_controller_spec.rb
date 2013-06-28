@@ -133,4 +133,12 @@ describe BooksController do
       it { should assign_to(:books).with [book4] }
     end
   end
+
+  describe '#recently_read' do
+    before do
+      get :recent_most_read
+    end
+
+    it { should respond_with 302 }
+  end
 end

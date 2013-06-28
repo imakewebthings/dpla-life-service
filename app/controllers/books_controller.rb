@@ -23,6 +23,11 @@ class BooksController < ApplicationController
     end
   end
 
+  def recent_most_read
+    popular_ids = BookReading.recent_most_read.keys
+    redirect_to search_path(search_type: 'ids', query: popular_ids.join(','))
+  end
+
   def extend_for_book_source
     case Rails.configuration.book_source
     when 'librarycloud'
