@@ -4,7 +4,7 @@ class ShelfBooksController < ApplicationController
 
   def create
     if @shelf.user == @user
-      @shelf.shelf_books.create! book_id: params[:id]
+      @shelf.shelf_books.create! item_id: params[:id]
       @shelf.book_ids.push(params[:id]).uniq!
       @shelf.save
       render 'shelves/show', status: 201
@@ -15,7 +15,7 @@ class ShelfBooksController < ApplicationController
 
   def destroy
     if @shelf.user == @user
-      shelf_book = @shelf.shelf_books.find_by_book_id params[:id]
+      shelf_book = @shelf.shelf_books.find_by_item_id params[:id]
       shelf_book.destroy
       @shelf.book_ids.delete params[:id]
       @shelf.save
