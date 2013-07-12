@@ -8,7 +8,7 @@ describe ShelfItemsController do
   describe '#create' do
     context 'when not logged in' do
       before do
-        post :create, shelf_id: shelf.id, id: 1
+        post :create, shelf_id: shelf.id, item: attributes_for(:shelf_item)
       end
 
       it { should respond_with 401 }
@@ -20,7 +20,7 @@ describe ShelfItemsController do
     context 'when shelf does not belong to user' do
       before do
         set_token user.token
-        post :create, shelf_id: shelf.id, id: 1
+        post :create, shelf_id: shelf.id, item: attributes_for(:shelf_item)
       end
 
       it { should respond_with 401 }
@@ -32,14 +32,14 @@ describe ShelfItemsController do
     context 'when shelf belongs to user' do
       before do
         set_token shelf.user.token
-        post :create, shelf_id: shelf.id, id: 1
+        post :create, shelf_id: shelf.id, item: attributes_for(:shelf_item)
       end
 
       it { should respond_with 201 }
       it { should render_template 'shelves/show' }
       it { should assign_to(:shelf).with shelf }
-      specify { shelf.reload.item_ids.should eq ['1'] }
-      specify { shelf.reload.shelf_items.first.item_id.should eq '1' }
+      specify { shelf.reload.item_ids.should eq [ShelfItem.first.item_id] }
+      specify { shelf.reload.shelf_items.first.item_id.should eq ShelfItem.first.item_id }
     end
   end
 

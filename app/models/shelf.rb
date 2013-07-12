@@ -6,7 +6,7 @@
 #  user_id     :integer
 #  name        :string(255)
 #  description :text
-#  book_ids    :text
+#  item_ids    :text
 #
 
 class Shelf < ActiveRecord::Base

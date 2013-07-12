@@ -21,4 +21,10 @@ describe ShelfItem do
 
   it { should validate_presence_of :item_id }
   it { should allow_mass_assignment_of :item_id }
+
+  it { should validate_presence_of :source }
+  it { should allow_mass_assignment_of :item_id }
+
+  it { should validate_presence_of :item_type }
+  it { should allow_mass_assignment_of :item_type }  
 end

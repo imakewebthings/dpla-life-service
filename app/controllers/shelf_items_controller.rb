@@ -4,8 +4,8 @@ class ShelfItemsController < ApplicationController
 
   def create
     if @shelf.user == @user
-      @shelf.shelf_items.create! item_id: params[:id]
-      @shelf.item_ids.push(params[:id]).uniq!
+      @shelf.shelf_items.create! params[:item]
+      @shelf.item_ids.push(params[:item][:item_id]).uniq!
       @shelf.save
       render 'shelves/show', status: 201
     else
