@@ -1,6 +1,6 @@
 class NeighborsController < ApplicationController
   def show
-    shelves = Shelf.joins(:shelf_books).where('shelf_books.item_id' => params[:book_id])
+    shelves = Shelf.joins(:shelf_items).where('shelf_items.item_id' => params[:book_id])
     book_ids = shelves.collect do |shelf|
       shelf.book_ids
     end.flatten.uniq

@@ -11,9 +11,9 @@
 
 require 'spec_helper'
 
-describe ShelfBook do
+describe ShelfItem do
   it 'has a valid mock' do
-    build(:shelf_book).should be_valid
+    build(:shelf_item).should be_valid
   end
 
   it { should validate_presence_of :shelf_id }

@@ -12,7 +12,7 @@ Dplalife::Application.routes.draw do
 
   resources :reviews, only: [:show, :update, :destroy]
   resources :shelves, only: [:show, :update, :destroy] do
-    resources :books, controller: 'shelf_books', only: [:create, :destroy]
+    resources :items, controller: 'shelf_items', only: [:create, :destroy]
   end
   resources 'dpla-items', as: 'dpla_items',
                           controller: 'dpla_items',

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130711232543) do
+ActiveRecord::Schema.define(:version => 20130711234636) do
 
   create_table "book_readings", :force => true do |t|
     t.string   "book_id"
@@ -52,16 +52,16 @@ ActiveRecord::Schema.define(:version => 20130711232543) do
   add_index "reviews", ["book_id"], :name => "index_reviews_on_book_id"
   add_index "reviews", ["user_id"], :name => "index_reviews_on_user_id"
 
-  create_table "shelf_books", :force => true do |t|
+  create_table "shelf_items", :force => true do |t|
     t.integer  "shelf_id"
     t.string   "item_id"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
 
-  add_index "shelf_books", ["item_id"], :name => "index_shelf_books_on_book_id"
-  add_index "shelf_books", ["shelf_id", "item_id"], :name => "index_shelf_books_on_shelf_id_and_book_id", :unique => true
-  add_index "shelf_books", ["shelf_id"], :name => "index_shelf_books_on_shelf_id"
+  add_index "shelf_items", ["item_id"], :name => "index_shelf_books_on_book_id"
+  add_index "shelf_items", ["shelf_id", "item_id"], :name => "index_shelf_books_on_shelf_id_and_book_id", :unique => true
+  add_index "shelf_items", ["shelf_id"], :name => "index_shelf_books_on_shelf_id"
 
   create_table "shelves", :force => true do |t|
     t.integer "user_id"

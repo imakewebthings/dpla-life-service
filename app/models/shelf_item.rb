@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: shelf_books
+# Table name: shelf_items
 #
 #  id         :integer          not null, primary key
 #  shelf_id   :integer
@@ -9,7 +9,7 @@
 #  updated_at :datetime         not null
 #
 
-class ShelfBook < ActiveRecord::Base
+class ShelfItem < ActiveRecord::Base
   attr_accessible :item_id
 
   belongs_to :shelf
