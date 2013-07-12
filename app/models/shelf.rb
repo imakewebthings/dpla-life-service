@@ -10,18 +10,18 @@
 #
 
 class Shelf < ActiveRecord::Base
-  attr_accessible :name, :description, :book_ids
+  attr_accessible :name, :description, :item_ids
 
-  before_save :ensure_book_id_array
+  before_save :ensure_item_id_array
 
   belongs_to :user
   has_many :shelf_items, dependent: :destroy
-  serialize :book_ids
+  serialize :item_ids
 
   validates :name, presence: true
   validates :user_id, presence: true
 
-  def ensure_book_id_array
-    self.book_ids = [] if self.book_ids.nil?
+  def ensure_item_id_array
+    self.item_ids = [] if self.item_ids.nil?
   end
 end

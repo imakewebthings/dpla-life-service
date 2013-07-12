@@ -5,7 +5,7 @@ class ShelfItemsController < ApplicationController
   def create
     if @shelf.user == @user
       @shelf.shelf_items.create! item_id: params[:id]
-      @shelf.book_ids.push(params[:id]).uniq!
+      @shelf.item_ids.push(params[:id]).uniq!
       @shelf.save
       render 'shelves/show', status: 201
     else
@@ -17,7 +17,7 @@ class ShelfItemsController < ApplicationController
     if @shelf.user == @user
       shelf_item = @shelf.shelf_items.find_by_item_id params[:id]
       shelf_item.destroy
-      @shelf.book_ids.delete params[:id]
+      @shelf.item_ids.delete params[:id]
       @shelf.save
       head 204
     else

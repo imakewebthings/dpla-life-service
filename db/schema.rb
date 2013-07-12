@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130711234636) do
+ActiveRecord::Schema.define(:version => 20130712001834) do
 
   create_table "book_readings", :force => true do |t|
     t.string   "book_id"
@@ -67,7 +67,7 @@ ActiveRecord::Schema.define(:version => 20130711234636) do
     t.integer "user_id"
     t.string  "name"
     t.text    "description"
-    t.text    "book_ids"
+    t.text    "item_ids"
   end
 
   add_index "shelves", ["user_id"], :name => "index_shelves_on_user_id"

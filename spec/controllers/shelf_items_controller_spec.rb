@@ -13,7 +13,7 @@ describe ShelfItemsController do
 
       it { should respond_with 401 }
       it { should render_template nil }
-      specify { shelf.reload.book_ids.should be_blank }
+      specify { shelf.reload.item_ids.should be_blank }
       specify { shelf.reload.shelf_items.should be_blank }
     end
 
@@ -25,7 +25,7 @@ describe ShelfItemsController do
 
       it { should respond_with 401 }
       it { should render_template nil }
-      specify { shelf.reload.book_ids.should be_blank }
+      specify { shelf.reload.item_ids.should be_blank }
       specify { shelf.reload.shelf_items.should be_blank }
     end
 
@@ -38,7 +38,7 @@ describe ShelfItemsController do
       it { should respond_with 201 }
       it { should render_template 'shelves/show' }
       it { should assign_to(:shelf).with shelf }
-      specify { shelf.reload.book_ids.should eq ['1'] }
+      specify { shelf.reload.item_ids.should eq ['1'] }
       specify { shelf.reload.shelf_items.first.item_id.should eq '1' }
     end
   end
@@ -52,7 +52,7 @@ describe ShelfItemsController do
       it { should respond_with 401 }
       it { should render_template nil }
       specify { ShelfItem.count.should eq 1 }
-      specify { shelf_item.shelf.book_ids.should include shelf_item.item_id }
+      specify { shelf_item.shelf.item_ids.should include shelf_item.item_id }
     end
 
     context 'when shelf does not belong to user' do
@@ -64,7 +64,7 @@ describe ShelfItemsController do
       it { should respond_with 401 }
       it { should render_template nil }
       specify { ShelfItem.count.should eq 1 }
-      specify { shelf_item.shelf.book_ids.should include shelf_item.item_id }
+      specify { shelf_item.shelf.item_ids.should include shelf_item.item_id }
     end
 
     context 'when shelf belongs to user' do
@@ -77,7 +77,7 @@ describe ShelfItemsController do
       it { should render_template nil }
       specify { ShelfItem.count.should eq 0 }
       specify {
-        shelf_item.shelf.reload.book_ids.should_not include shelf_item.item_id
+        shelf_item.shelf.reload.item_ids.should_not include shelf_item.item_id
       }
     end
   end

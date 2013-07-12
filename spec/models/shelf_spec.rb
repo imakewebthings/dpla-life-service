@@ -20,7 +20,7 @@ describe Shelf do
 
   it { should allow_mass_assignment_of :name }
   it { should allow_mass_assignment_of :description }
-  it { should allow_mass_assignment_of :book_ids }
+  it { should allow_mass_assignment_of :item_ids }
   it { should_not allow_mass_assignment_of :user_id }
 
   it { should validate_presence_of :name }
@@ -28,11 +28,11 @@ describe Shelf do
 
   it { should have_many :shelf_items }
 
-  it 'turns nil values of book_ids into an empty array' do
+  it 'turns nil values of item_ids into an empty array' do
     shelf = create :shelf
-    shelf.book_ids.should eq []
-    shelf.book_ids = nil
+    shelf.item_ids.should eq []
+    shelf.item_ids = nil
     shelf.save
-    shelf.book_ids.should eq []
+    shelf.item_ids.should eq []
   end
 end

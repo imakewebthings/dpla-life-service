@@ -23,7 +23,7 @@ describe NeighborsController do
                               ].join(',') }
     end
 
-    context 'when books has no neighbors' do
+    context 'when book has no neighbors' do
       before do
         create :shelf_item, shelf: shelf2
         get :show, book_id: shelf_item.item_id
