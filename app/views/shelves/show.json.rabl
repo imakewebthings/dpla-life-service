@@ -1,3 +1,3 @@
 object @shelf
 
-attributes :id, :name, :description, :user_id, :book_ids
+attributes :id, :name, :description, :user_id, :item_ids

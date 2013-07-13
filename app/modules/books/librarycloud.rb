@@ -1,91 +1,103 @@
-BooksController.class_eval do
-  module Librarycloud
-    require 'ostruct'
-    require 'open-uri'
-    require 'json'
+class Librarycloud
+  require 'ostruct'
+  require 'open-uri'
+  require 'json'
 
-    def show
-      url = base_url + "/v1/api/item/#{params[:id]}"
-      json = JSON.parse(open(url).read)['docs'][0]
-      @book = json_to_book json
+  def initialize(params)
+    @params = params
+  end
+
+  def single_book
+    url = base_url + "/v1/api/item/#{@params[:id]}"
+    json = JSON.parse(open(url).read)['docs'][0]
+    @book = json_to_book json
+  end
+
+  def search_by_keyword
+    url = build_search_url :filter => "keyword:#{@params[:query]}"
+    json = JSON.parse(open(url).read)
+    json_to_response json
+    format_results
+  end
+
+  def search_by_title
+    url = build_search_url :filter => "title_keyword:#{@params[:query]}"
+    json = JSON.parse(open(url).read)
+    json_to_response json
+    format_results
+  end
+
+  def search_by_author
+    url = build_search_url :filter => "creator_keyword:#{@params[:query]}"
+    json = JSON.parse(open(url).read)
+    json_to_response json
+    format_results
+  end
+
+  def search_by_subject
+    url = build_search_url :filter => "note:#{@params[:query]}"
+    json = JSON.parse(open(url).read)
+    json_to_response json
+    format_results
+  end
+
+  def search_by_subject_union
+    subjects = fetch_book_subjects @params[:query]
+    if subjects.blank?
+      empty_response
+    else
+      @num_found = 0
+      @books = subjects.collect do |subject|
+        subject_url = build_search_url :filter => "note:#{subject}"
+        json = JSON.parse(open(subject_url).read)
+        @num_found += json['num_found']
+        json['docs']
+      end.flatten.uniq do |book|
+        book['id']
+      end.collect {|book| json_to_book book }
+      @limit = param_limit
+      @start = param_start + param_limit
+      check_last_page
     end
+    format_results
+  end
 
-    def search_by_keyword
-      url = build_search_url :filter => "keyword:#{params[:query]}"
-      json = JSON.parse(open(url).read)
-      json_to_response json
-    end
-
-    def search_by_title
-      url = build_search_url :filter => "title_keyword:#{params[:query]}"
-      json = JSON.parse(open(url).read)
-      json_to_response json
-    end
-
-    def search_by_author
-      url = build_search_url :filter => "creator_keyword:#{params[:query]}"
-      json = JSON.parse(open(url).read)
-      json_to_response json
-    end
-
-    def search_by_subject
-      url = build_search_url :filter => "note:#{params[:query]}"
-      json = JSON.parse(open(url).read)
-      json_to_response json
-    end
-
-    def search_by_subject_union
-      subjects = fetch_book_subjects params[:query]
-      if subjects.blank?
-        empty_response
-      else
-        @num_found = 0
-        @books = subjects.collect do |subject|
-          subject_url = build_search_url :filter => "note:#{subject}"
-          json = JSON.parse(open(subject_url).read)
-          @num_found += json['num_found']
-          json['docs']
-        end.flatten.uniq do |book|
-          book['id']
-        end.collect {|book| json_to_book book }
-        @limit = param_limit
-        @start = param_start + param_limit
-        check_last_page
+  def search_by_subject_intersection
+    subjects = fetch_book_subjects @params[:query]
+    if subjects.blank?
+      empty_response
+    else
+      url = build_search_url
+      subject_filters = subjects.collect do |subject|
+        { :filter => "note:#{subject}" }.to_query
       end
+      url = url + '&' + subject_filters.join('&')
+      json = JSON.parse(open(url).read)
+      json_to_response json
     end
+    format_results
+  end
 
-    def search_by_subject_intersection
-      subjects = fetch_book_subjects params[:query]
-      if subjects.blank?
-        empty_response
-      else
-        url = build_search_url
-        subject_filters = subjects.collect do |subject|
-          { :filter => "note:#{subject}" }.to_query
-        end
-        url = url + '&' + subject_filters.join('&')
-        json = JSON.parse(open(url).read)
-        json_to_response json
-      end
+  def search_by_ids
+    if @params[:query].blank?
+      empty_response
+    else
+      url = build_search_url :filter => "id:#{@params[:query]}"
+      json = JSON.parse(open(url).read)
+      json_to_response json
+      sort_by_original_ids
     end
+    format_results
+  end
 
-    def search_by_ids
-      if params[:query].blank?
-        empty_response
-      else
-        url = build_search_url :filter => "id:#{params[:query]}"
-        json = JSON.parse(open(url).read)
-        json_to_response json
-        sort_by_original_ids
-      end
-    end
+  private
 
     def param_start
-      start = (params[:start] || 0).to_i
+      start = (@params[:start] || 0).to_i
     end
 
     def param_limit
-      limit = (params[:limit] || 10).to_i
+      limit = (@params[:limit] || 10).to_i
     end
 
     def build_search_url(query = {})
@@ -156,6 +168,12 @@ BooksController.class_eval do
       @start = -1
     end
 
+    def check_last_page
+      if @books.empty? or @books.length < @limit
+        @start = -1
+      end
+    end
+
     def printable_source_record(json)
       return case json['source_record']['collection']
       when 'dp_la_books_online'
@@ -168,7 +186,7 @@ BooksController.class_eval do
     end
 
     def sort_by_original_ids
-      original_ids = params[:query].split ','
+      original_ids = @params[:query].split ','
       lookup = {}
       original_ids.each_with_index do |id, index|
         lookup[id] = index
@@ -177,5 +195,13 @@ BooksController.class_eval do
         lookup.fetch book.source_id
       end
     end
-  end
+
+    def format_results
+      OpenStruct.new(
+        limit: @limit,
+        start: @start,
+        books: @books,
+        num_found: @num_found
+      )
+    end
 end

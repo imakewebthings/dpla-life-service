@@ -37,48 +37,16 @@ describe BooksController do
 
         it { should respond_with 200 }
         it { should render_template 'books/search' }
-        it { should assign_to(:books).with [] }
-        it { should assign_to(:num_found).with 0 }
-        it { should assign_to(:start).with -1 }
-        it { should assign_to(:limit).with 10 }
+        it { should assign_to(:results) }
       end
 
       context 'with results' do
-        context 'on first page' do
-          before do
-            get :search, query: 'foo', search_type: 'keyword',
-                         start: 0, limit: 2
-          end
-
-          it { should assign_to(:books).with Book.offset(0).limit(2) }
-          it { should assign_to(:num_found).with 5 }
-          it { should assign_to(:start).with 2 }
-          it { should assign_to(:limit).with 2 }
+        before do
+          get :search, query: 'foo', search_type: 'keyword',
+                       start: 0, limit: 2
         end
 
-        context 'on middle page' do
-          before do
-            get :search, query: 'foo', search_type: 'keyword',
-                         start: 2, limit: 2
-          end
-
-          it { should assign_to(:books).with Book.offset(2).limit(2) }
-          it { should assign_to(:num_found).with 5 }
-          it { should assign_to(:start).with 4 }
-          it { should assign_to(:limit).with 2 }
-        end
-
-        context 'on last page' do
-          before do
-            get :search, query: 'foo', search_type: 'keyword',
-                         start: 4, limit: 2
-          end
-
-          it { should assign_to(:books).with Book.offset(4).limit(2) }
-          it { should assign_to(:num_found).with 5 }
-          it { should assign_to(:start).with -1 }
-          it { should assign_to(:limit).with 2 }
-        end
+        it { should assign_to(:results) }
       end
     end
 
@@ -89,8 +57,6 @@ describe BooksController do
       end
 
       it { should respond_with 200 }
-      it { should assign_to(:books).with [Book.first, Book.last] }
-      it { should assign_to(:num_found).with 2 }
     end
 
     describe 'by subject' do
@@ -100,8 +66,6 @@ describe BooksController do
       end
 
       it { should respond_with 200 }
-      it { should assign_to(:books).with [Book.last] }
-      it { should assign_to(:num_found).with 1 }
     end
 
     describe 'by subject union' do
@@ -115,7 +79,6 @@ describe BooksController do
       end
 
       it { should respond_with 200 }
-      it { should assign_to(:books).with [book2, book3] }
     end
 
     describe 'by subject intersection' do
@@ -130,7 +93,6 @@ describe BooksController do
       end
 
       it { should respond_with 200 }
-      it { should assign_to(:books).with [book4] }
     end
   end
 
