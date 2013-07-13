@@ -87,12 +87,17 @@ class Mocklib
   def search_by_ids
     @limit = 0
     @start = -1
-    book_ids = @params[:query].split(',')
-    unsorted_books = Book.where(:source_id => book_ids)
-    @books = book_ids.collect do |id|
-      unsorted_books.detect {|x| x[:source_id] == id}
+    if @params[:query].blank?
+      @num_found = 0
+      @books = []
+    else
+      book_ids = @params[:query].split(',')
+      unsorted_books = Book.where(:source_id => book_ids)
+      @books = book_ids.collect do |id|
+        unsorted_books.detect {|x| x[:source_id] == id}
+      end
+      @num_found = @books.length
     end
-    @num_found = @books.length
     format_results
   end
 

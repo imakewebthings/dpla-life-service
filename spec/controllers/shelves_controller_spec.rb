@@ -4,6 +4,10 @@ describe ShelvesController do
   let(:user) { create :user }
   let(:shelf) { create :shelf }
 
+  before do
+    stub_request(:get, "http://api.dp.la/v2/items/?api_key=mockkey&page_size=100").to_return(body: '{}')
+  end
+
   describe '#index' do
     context 'with valid user id' do
       before do
@@ -34,6 +38,7 @@ describe ShelvesController do
       it { should respond_with 200 }
       it { should render_template :show }
       it { should assign_to(:shelf).with shelf }
+      it { should assign_to :items }
     end
 
     context 'with an invalid shelf id' do
