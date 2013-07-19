@@ -54,6 +54,7 @@ class ShelvesController < ApplicationController
       @shelf.item_ids.each_with_index do |id, index|
         lookup[id] = index
       end
+      puts lookup
       @items.sort_by! do |item|
         lookup.fetch item.source_id
       end
@@ -61,26 +62,51 @@ class ShelvesController < ApplicationController
 
     def book_items
       books = @shelf.shelf_items.where(source: 'book_source')
-      return [] if books.nil?
-
+      return [] if books.blank?
       case Rails.configuration.book_source
       when 'librarycloud'
         require 'books/librarycloud'
-        Librarycloud.new({
-          ids: books.pluck('item_id').join(',')
+        return Librarycloud.new({
+          query: books.pluck('item_id').join(',')
         }).search_by_ids['books']
       else
         require 'books/mocklib'
-        Mocklib.new({
-          ids: books.pluck('item_id').join(',')
+        return Mocklib.new({
+          query: books.pluck('item_id').join(',')
         }).search_by_ids['books']
       end
     end
 
     def dpla_items
       dpla_ids = @shelf.shelf_items.where(source: 'dpla').pluck('item_id')
-      return [] if dpla_ids.nil?
+      return [] if dpla_ids.blank?
       url = "http://api.dp.la/v2/items/#{dpla_ids.join(',')}?api_key=#{Rails.configuration.dpla_api_key}&page_size=100"
-      JSON.parse(open(url).read)['docs']
+      transform_dpla_response JSON.parse(open(url).read)['docs']
+    end
+
+    def transform_dpla_response(items)
+      items.map do |item|
+        OpenStruct.new(
+          source_id: item['id'],
+          title: item['sourceResource'].fetch('title'),
+          publisher: nil,
+          creator: item['provider'].fetch('name'),
+          description: item['sourceResource'].fetch('description'),
+          source_url: "http://dp.la/item/#{item['id']}",
+          viewer_url: nil,
+          cover_small: item.fetch('object'),
+          cover_large: nil,
+          pub_date: nil,
+          shelfrank: 1,
+          subjects: item['sourceResource'].fetch('subject', []).collect { |s|
+            s['name']
+          },
+          measurement_height_numeric: 1,
+          measurement_page_numeric: 1,
+          source_library: item['provider'].fetch('name'),
+          format: [*item['sourceResource'].fetch('type')],
+          source: 'dpla'
+        )
+      end
     end
 end
