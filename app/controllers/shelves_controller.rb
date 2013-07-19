@@ -49,12 +49,11 @@ class ShelvesController < ApplicationController
     end
 
     def aggregate_shelf_items
-      @items = (book_items || []) + (dpla_items || [])
+      @items = ((book_items || []) + (dpla_items || [])).compact
       lookup = {}
       @shelf.item_ids.each_with_index do |id, index|
         lookup[id] = index
       end
-      puts lookup
       @items.sort_by! do |item|
         lookup.fetch item.source_id
       end
@@ -88,13 +87,13 @@ class ShelvesController < ApplicationController
       items.map do |item|
         OpenStruct.new(
           source_id: item['id'],
-          title: item['sourceResource'].fetch('title'),
+          title: item['sourceResource'].fetch('title', nil),
           publisher: nil,
-          creator: item['provider'].fetch('name'),
-          description: item['sourceResource'].fetch('description'),
+          creator: item['provider'].fetch('name', nil),
+          description: item['sourceResource'].fetch('description', nil),
           source_url: "http://dp.la/item/#{item['id']}",
           viewer_url: nil,
-          cover_small: item.fetch('object'),
+          cover_small: item.fetch('object', nil),
           cover_large: nil,
           pub_date: nil,
           shelfrank: 1,
@@ -103,8 +102,8 @@ class ShelvesController < ApplicationController
           },
           measurement_height_numeric: 1,
           measurement_page_numeric: 1,
-          source_library: item['provider'].fetch('name'),
-          format: [*item['sourceResource'].fetch('type')],
+          source_library: item['provider'].fetch('name', nil),
+          format: [*item['sourceResource'].fetch('type', nil)],
           source: 'dpla'
         )
       end
