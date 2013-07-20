@@ -17,6 +17,7 @@ class ShelvesController < ApplicationController
 
   def create
     @shelf = @user.shelves.create! params[:shelf]
+    @items = []
     render :show, status: 201
   end
 
