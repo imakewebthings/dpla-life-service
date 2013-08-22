@@ -101,6 +101,11 @@ class Mocklib
     format_results
   end
 
+  def recent_most_read(popular_ids)
+    @params[:query] = popular_ids.join(',')
+    self.search_by_ids
+  end
+
   private
   
     def check_last_page

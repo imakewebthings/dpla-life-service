@@ -90,6 +90,14 @@ class Librarycloud
     format_results
   end
 
+  def recent_most_read(popular_ids)
+    @params[:start] = 0
+    @params[:limit] = 100
+    @params[:query] = popular_ids[0..49].join(',')
+    puts @params
+    search_by_ids
+  end
+
   private
 
     def param_start

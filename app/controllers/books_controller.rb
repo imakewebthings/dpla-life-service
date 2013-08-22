@@ -11,7 +11,8 @@ class BooksController < ApplicationController
 
   def recent_most_read
     popular_ids = BookReading.recent_most_read.keys
-    redirect_to search_path(search_type: 'ids', query: popular_ids.join(','))
+    @results = @book_loader.recent_most_read popular_ids
+    render :search
   end
 
   def set_book_loader
